@@ -174,6 +174,7 @@
 // soft reset
 #define SRST      0x80
 
+// PWM
 #define PWM0      0x81
 #define PWM1      0x82
 #define PWM2      0x83

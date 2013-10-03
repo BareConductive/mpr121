@@ -7,7 +7,7 @@ class MPR121_t
 		uint8_t address;
 	public:
 		void begin();
-		void setI2Caddress();
+		void setAddress(uint8_t address);
 		void enableTouchElectrodes();
 		void run();
 		void stop();

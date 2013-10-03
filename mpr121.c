@@ -5,12 +5,17 @@ extern "C" {
 }
 
 #include "MPR121.h"
+#include "MPR121_defs"
 #include <Wire.h>
 
 uint8_t MPR121_t::address = 0x5A; // default address is 0x5A
 
 MPR121_t::MPR121_t()
 {
+}
+
+MPR121_t::begin(){
+	
 }
 
 MPR121_t::setAddress(uint8_t address){
