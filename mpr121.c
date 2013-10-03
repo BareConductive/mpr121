@@ -25,6 +25,26 @@ MPR121_t::setAddress(uint8_t address){
 	}
 }
 
+MPR121_t::reset(){
+	set_register(this->address, SRST, 0x63); // soft reset
+}
 
+//private
+
+MPR121_t::set_register(unsigned char r, unsigned char v){
+    Wire.beginTransmission(this->address);
+    Wire.write(r);
+    Wire.write(v);
+    Wire.endTransmission();
+}
+
+MPR121_t::get_register(unsigned char r){
+    Wire.beginTransmission(this->address); 
+    Wire.write(r); // set address register to read from our requested register
+    Wire.endTransmission(false); // don't send stop so we can send a repeated start
+    Wire.requestFrom(this->address,1);  // just a single byte
+    return Wire.read();
+    //Wire.endTransmission(true);
+}
 
 MPR121_t MPR121 = MPR121_t();
