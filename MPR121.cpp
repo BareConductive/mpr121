@@ -18,67 +18,7 @@ void MPR121_t::begin(){
 	reset();
 
 	// default values...
-	
-	/******** NORMAL TOUCH ELECTRODES ********/
-	
-	// baseline filter rising 
-	setRegister(MHDR,0x3F);
-	setRegister(NHDR,0x3F);
-	setRegister(NCLR,0x05);
-	setRegister(FDLR,0x00);
-	
-	// baseline filter falling
-	setRegister(MHDF,0x00);
-	setRegister(NHDF,0x3F);
-	setRegister(NCLF,0x10);
-	setRegister(FDLF,0x03);
-	
-	// touched filter
-	setRegister(NHDT,0x00);
-	setRegister(NCLT,0x00);
-	setRegister(FDLT,0xFF);
-	
-	/******** PROXIMITY SUPER-ELECTRODE ********/
-	
-	// baseline filter rising 
-	setRegister(MHDPROXR,0x0F);
-	setRegister(NHDPROXR,0x0F);
-	setRegister(NCLPROXR,0x00);
-	setRegister(FDLPROXR,0x00);
-
-	// baseline filter falling
-	setRegister(MHDPROXF,0x01);
-	setRegister(NHDPROXF,0x01);
-	setRegister(NCLPROXF,0xFF);
-	setRegister(FDLPROXF,0xFF);
-
-	// touched filter
-	setRegister(NHDPROXT,0x00);
-	setRegister(NCLPROXT,0x00);
-	setRegister(FDLPROXT,0x00);
-	
-	// touch and release interrupt debounce
-  	setRegister(DTR, 0x11);
-  	
-  	/******* EVERYTHING BELOW HERE IS
-  	      	 POORLY UNDERSTOOD AND 
-  	      	 UNOPTIMISED              **********/
-
-	// AFE and filter configuration 
-	setRegister(AFE1, 0xFF);  
-	setRegister(AFE2, 0x38);
-	setRegister(ECR, 0x0C);
-
-	// Auto Configuration 
-	setRegister(ACCR0, 0x0B);
-	//setRegister(ACCR1, 0x80);
-	setRegister(USL, 0xC8); 
-	setRegister(LSL, 0x82); 
-	setRegister(TL, 0xB4); 
-	
-	// Electrode Configuration
-	//setRegister(ECR, 0xBC);
-	setRegister(ECR, 0x80); // leaves all electrodes disabled
+	applySettings(&defaultSettings);
 	
 }
 
@@ -91,7 +31,43 @@ void MPR121_t::begin(unsigned char address){
 }
 
 void MPR121_t::reset(){
-	setRegister(SRST, 0x63); // soft reset
+	setRegister(_SRST, 0x63); // soft reset
+}
+
+void MPR121_t::applySettings(MPR121_settings *settings){
+	setTouchThreshold(settings->TTHRESH);
+	setReleaseThreshold(settings->RTHRESH);
+	setRegister(_MHDR,settings->MHDR);
+	setRegister(_NHDR,settings->NHDR);
+	setRegister(_NCLR,settings->NCLR);
+	setRegister(_FDLR,settings->FDLR);
+	setRegister(_MHDF,settings->MHDF);
+	setRegister(_NHDF,settings->NHDF);
+	setRegister(_NCLF,settings->NCLF);
+	setRegister(_FDLF,settings->FDLF);
+	setRegister(_NHDT,settings->NHDT);
+	setRegister(_NCLT,settings->NCLT);
+	setRegister(_FDLT,settings->FDLT);
+	setRegister(_MHDPROXR,settings->MHDPROXR);
+	setRegister(_NHDPROXR,settings->NHDPROXR);
+	setRegister(_NCLPROXR,settings->NCLPROXR);
+	setRegister(_FDLPROXR,settings->FDLPROXR);
+	setRegister(_MHDPROXF,settings->MHDPROXF);
+	setRegister(_NHDPROXF,settings->NHDPROXF);
+	setRegister(_NCLPROXF,settings->NCLPROXF);
+	setRegister(_FDLPROXF,settings->FDLPROXF);
+	setRegister(_NHDPROXT,settings->NHDPROXT);
+	setRegister(_NCLPROXT,settings->NCLPROXT);
+	setRegister(_FDLPROXT,settings->FDLPROXT);
+  	setRegister(_DTR, settings->DTR);
+	setRegister(_AFE1, settings->AFE1);  
+	setRegister(_AFE2, settings->AFE2);
+	setRegister(_ECR, settings->ECR);
+	setRegister(_ACCR0, settings->ACCR0);
+	setRegister(_ACCR1, settings->ACCR1);
+	setRegister(_USL, settings->USL); 
+	setRegister(_LSL, settings->LSL); 
+	setRegister(_TL, settings->TL); 
 }
 
 //private
@@ -112,23 +88,23 @@ unsigned char MPR121_t::getRegister(unsigned char r){
 }
 
 void MPR121_t::run(){
-	setRegister(ECR, getRegister(ECR) | 0x3F); // turn on all electrodes to enter run
+	setRegister(_ECR, getRegister(_ECR) | 0x3F); // turn on all electrodes to enter run
 }
 
 void MPR121_t::stop(){
-	setRegister(ECR, getRegister(ECR) & 0xC0); // turn off all electrodes to enter stop
+	setRegister(_ECR, getRegister(_ECR) & 0xC0); // turn off all electrodes to enter stop
 }
 
 unsigned int MPR121_t::getTouchStatus(){
-	return((unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8));
+	return((unsigned int)getRegister(_TS1) + ((unsigned int)getRegister(_TS2)<<8));
 }
 
 bool MPR121_t::getTouchStatus(unsigned char electrode){
 	if(electrode < 13){
 		if(electrode<8){
-			return((getRegister(TS1)>>electrode) & 0x01);
+			return((getRegister(_TS1)>>electrode) & 0x01);
 		} else {
-			return((getRegister(TS2)>>(electrode-8)) & 0x01);;
+			return((getRegister(_TS2)>>(electrode-8)) & 0x01);;
 		}
 	} else return false;
 }
@@ -142,7 +118,7 @@ void MPR121_t::setTouchThreshold(unsigned char val){
 
 void MPR121_t::setTouchThreshold(unsigned char val, unsigned char electrode){
 	touchThr[electrode] = val; 
-	setRegister(E0TTH + (electrode<<1), val); 	// this relies on the internal register
+	setRegister(_E0TTH + (electrode<<1), val); 	// this relies on the internal register
 												// map of the MPR121 and uses <<1 as
 												// a quick equivalent to x2
 }
@@ -155,7 +131,7 @@ void MPR121_t::setReleaseThreshold(unsigned char val){
 
 void MPR121_t::setReleaseThreshold(unsigned char val, unsigned char electrode){
 	releaseThr[electrode] = val; 
-	setRegister(E0RTH + (electrode<<1), val); 	// this relies on the internal register
+	setRegister(_E0RTH + (electrode<<1), val); 	// this relies on the internal register
 												// map of the MPR121 and uses <<1 as
 												// a quick equivalent to x2
 }
