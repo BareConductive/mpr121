@@ -103,13 +103,12 @@ struct MPR121_settings
 
 enum pinf_t
 {
-	digInput,
-	digInputPU,
-	digInputPD,
-	digOutput,
-	digOutputHS,
-	digOutputLS,
-	touch
+	INPUT,
+	INPUT_PU,
+	INPUT_PD,
+	OUTPUT,
+	OUTPUT_HS,
+	OUTPUT_LS
 };
 
 class MPR121_t
@@ -132,7 +131,9 @@ class MPR121_t
 		void setReleaseThreshold(unsigned char val);
 		void setReleaseThreshold(unsigned char electrode, unsigned char val);
 		
-		void setElectrodeFunction(unsigned char electrode, pinf_t function); 		
+		void setNumDigPins(unsigned char numPins);
+		void pinMode(unsigned char electrode, pinf_t mode); 
+		void pinMode(unsigned char electrode, int mode); 				
 		void digitalWrite(unsigned char electrode, unsigned char val);
 		
 		

@@ -137,14 +137,14 @@ void MPR121_t::setReleaseThreshold(unsigned char electrode, unsigned char val){
 													// a quick equivalent to x2
 }
 
-void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
+void MPR121_t::pinMode(unsigned char electrode, pinf_t mode){
 	if(electrode<4 || electrode >11) return; // only valid for ELE4..ELE11
 											 //				   LED0..LED7
 											 
 	unsigned char bitmask = 1<<(electrode-4);											 
 											 
-	switch(function){
-		case digInput:
+	switch(mode){
+		case INPUT:
 			// EN = 1
 			// DIR = 0
 			// CTL0 = 0
@@ -154,7 +154,7 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(CTL0, getRegister(DIR) & ~bitmask);
 			setRegister(CTL1, getRegister(DIR) & ~bitmask);						
 			break;
-		case digInputPU:
+		case INPUT_PU:
 			// EN = 1
 			// DIR = 0
 			// CTL0 = 1
@@ -164,7 +164,7 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(CTL0, getRegister(DIR) | bitmask);
 			setRegister(CTL1, getRegister(DIR) | bitmask);		
 			break;
-		case digInputPD:
+		case INPUT_PD:
 			// EN = 1
 			// DIR = 0
 			// CTL0 = 1
@@ -174,7 +174,7 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(CTL0, getRegister(DIR) | bitmask);
 			setRegister(CTL1, getRegister(DIR) & ~bitmask);		
 			break;		
-		case digOutput:
+		case OUTPUT:
 			// EN = 1
 			// DIR = 1
 			// CTL0 = 0
@@ -184,7 +184,7 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(CTL0, getRegister(DIR) & ~bitmask);
 			setRegister(CTL1, getRegister(DIR) & ~bitmask);				
 			break;		
-		case digOutputHS:
+		case OUTPUT_HS:
 			// EN = 1
 			// DIR = 1
 			// CTL0 = 1
@@ -194,7 +194,7 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(CTL0, getRegister(DIR) | bitmask);
 			setRegister(CTL1, getRegister(DIR) | bitmask);						
 			break;		
-		case digOutputLS:
+		case OUTPUT_LS:
 			// EN = 1
 			// DIR = 1
 			// CTL0 = 1
@@ -203,10 +203,20 @@ void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
 			setRegister(DIR, getRegister(DIR) | bitmask);
 			setRegister(CTL0, getRegister(DIR) | bitmask);
 			setRegister(CTL1, getRegister(DIR) & ~bitmask);							
-			break;		
-		case touch:
-			setRegister(EN, getRegister(EN) & ~bitmask);
-			break;		
+			break;			
+	}
+}
+
+void MPR121_t::pinMode(unsigned char electrode, int mode){
+	// this is to catch the fact that Arduino prefers its definition of INPUT and OUTPUT
+	// to ours...
+	
+	if(mode == 1){
+		pinMode(electrode, (pinf_t)OUTPUT);
+	} else if(mode == 0){
+		pinMode(electrode, (pinf_t)INPUT);
+	} else {
+		return; // anything that isn't a 1 or 0 is invalid
 	}
 }
 
