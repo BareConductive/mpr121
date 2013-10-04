@@ -101,12 +101,21 @@ struct MPR121_settings
 	
 };
 
+enum pinf_t
+{
+	digInput,
+	digInputPU,
+	digInputPD,
+	digOutput,
+	digOutputHS,
+	digOutputLS,
+	touch
+};
+
 class MPR121_t
 {
 	private:
 		unsigned char address;
-		unsigned char touchThr[13];
-		unsigned char releaseThr[13];
 		MPR121_settings defaultSettings;
 	public:
 		MPR121_t();
@@ -116,13 +125,16 @@ class MPR121_t
 		void run();
 		void stop();
 		void reset();
-		void enableTouchElectrodes();
 		void applySettings(MPR121_settings *settings);
 		
 		void setTouchThreshold(unsigned char val);
-		void setTouchThreshold(unsigned char val, unsigned char electrode);
+		void setTouchThreshold(unsigned char electrode, unsigned char val);
 		void setReleaseThreshold(unsigned char val);
-		void setReleaseThreshold(unsigned char val, unsigned char electrode);		
+		void setReleaseThreshold(unsigned char electrode, unsigned char val);
+		
+		void setElectrodeFunction(unsigned char electrode, pinf_t function); 		
+		void digitalWrite(unsigned char electrode, unsigned char val);
+		
 		
 		bool getTouchStatus(unsigned char electrode);
 		unsigned int getTouchStatus();

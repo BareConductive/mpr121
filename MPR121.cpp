@@ -8,8 +8,7 @@ extern "C" {
 #include "MPR121_defs.h"
 #include <Wire.h>
 
-MPR121_t::MPR121_t()
-{
+MPR121_t::MPR121_t(){
 	address = 0x5A; // default address is 0x5A
 }
 
@@ -100,13 +99,13 @@ unsigned int MPR121_t::getTouchStatus(){
 }
 
 bool MPR121_t::getTouchStatus(unsigned char electrode){
-	if(electrode < 13){
-		if(electrode<8){
-			return((getRegister(TS1)>>electrode) & 0x01);
-		} else {
-			return((getRegister(TS2)>>(electrode-8)) & 0x01);;
-		}
-	} else return false;
+	if(electrode>11) return false; // avoid out of bound behaviour
+
+	if(electrode<8){
+		return((getRegister(TS1)>>electrode) & 0x01);
+	} else {
+		return((getRegister(TS2)>>(electrode-8)) & 0x01);;
+	}
 }
 
 
@@ -116,8 +115,9 @@ void MPR121_t::setTouchThreshold(unsigned char val){
 	}
 }
 
-void MPR121_t::setTouchThreshold(unsigned char val, unsigned char electrode){
-	touchThr[electrode] = val; 
+void MPR121_t::setTouchThreshold(unsigned char electrode, unsigned char val){
+	if(electrode>12) return; // avoid out of bounds behaviour
+	
 	setRegister(E0TTH + (electrode<<1), val); 	// this relies on the internal register
 												// map of the MPR121 and uses <<1 as
 												// a quick equivalent to x2
@@ -129,11 +129,94 @@ void MPR121_t::setReleaseThreshold(unsigned char val){
 	}
 }
 
-void MPR121_t::setReleaseThreshold(unsigned char val, unsigned char electrode){
-	releaseThr[electrode] = val; 
+void MPR121_t::setReleaseThreshold(unsigned char electrode, unsigned char val){
+	if(electrode>12) return; // avoid out of bounds behaviour
+	
 	setRegister(E0RTH + (electrode<<1), val); 	// this relies on the internal register
-												// map of the MPR121 and uses <<1 as
-												// a quick equivalent to x2
+													// map of the MPR121 and uses <<1 as
+													// a quick equivalent to x2
+}
+
+void MPR121_t::setElectrodeFunction(unsigned char electrode, pinf_t function){
+	if(electrode<4 || electrode >11) return; // only valid for ELE4..ELE11
+											 //				   LED0..LED7
+											 
+	unsigned char bitmask = 1<<(electrode-4);											 
+											 
+	switch(function){
+		case digInput:
+			// EN = 1
+			// DIR = 0
+			// CTL0 = 0
+			// CTL1 = 0
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) & ~bitmask);
+			setRegister(CTL0, getRegister(DIR) & ~bitmask);
+			setRegister(CTL1, getRegister(DIR) & ~bitmask);						
+			break;
+		case digInputPU:
+			// EN = 1
+			// DIR = 0
+			// CTL0 = 1
+			// CTL1 = 1
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) & ~bitmask);
+			setRegister(CTL0, getRegister(DIR) | bitmask);
+			setRegister(CTL1, getRegister(DIR) | bitmask);		
+			break;
+		case digInputPD:
+			// EN = 1
+			// DIR = 0
+			// CTL0 = 1
+			// CTL1 = 0
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) & ~bitmask);
+			setRegister(CTL0, getRegister(DIR) | bitmask);
+			setRegister(CTL1, getRegister(DIR) & ~bitmask);		
+			break;		
+		case digOutput:
+			// EN = 1
+			// DIR = 1
+			// CTL0 = 0
+			// CTL1 = 0
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) | bitmask);
+			setRegister(CTL0, getRegister(DIR) & ~bitmask);
+			setRegister(CTL1, getRegister(DIR) & ~bitmask);				
+			break;		
+		case digOutputHS:
+			// EN = 1
+			// DIR = 1
+			// CTL0 = 1
+			// CTL1 = 1
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) | bitmask);
+			setRegister(CTL0, getRegister(DIR) | bitmask);
+			setRegister(CTL1, getRegister(DIR) | bitmask);						
+			break;		
+		case digOutputLS:
+			// EN = 1
+			// DIR = 1
+			// CTL0 = 1
+			// CTL1 = 0
+			setRegister(EN, getRegister(EN) | bitmask);
+			setRegister(DIR, getRegister(DIR) | bitmask);
+			setRegister(CTL0, getRegister(DIR) | bitmask);
+			setRegister(CTL1, getRegister(DIR) & ~bitmask);							
+			break;		
+		case touch:
+			setRegister(EN, getRegister(EN) & ~bitmask);
+			break;		
+	}
+}
+
+void MPR121_t::digitalWrite(unsigned char electrode, unsigned char val){
+	if(electrode<4 || electrode>11) return; // avoid out of bounds behaviour
+	if(val){
+		setRegister(SET, 1<<(electrode-4));
+	} else {
+		setRegister(CLR, 1<<(electrode-4));
+	}
 }
 
 MPR121_t MPR121 = MPR121_t();
