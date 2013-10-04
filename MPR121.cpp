@@ -11,6 +11,7 @@ extern "C" {
 MPR121_t::MPR121_t(){
 	address = 0x5A; // default address is 0x5A
 	ECR_backup = 0x00;
+	running = false;
 }
 
 void MPR121_t::begin(){
@@ -73,6 +74,15 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 //private
 
 void MPR121_t::setRegister(unsigned char r, unsigned char v){
+
+	if(r==ECR){
+		if(v&0x3F){
+			running = true;
+		} else {
+			running = false;
+		} 
+	}
+
     Wire.beginTransmission(address);
     Wire.write(r);
     Wire.write(v);
@@ -94,7 +104,7 @@ void MPR121_t::run(){
 
 void MPR121_t::stop(){
 	ECR_backup = getRegister(ECR);			   // backup ECR to restore when we enter run
-	setRegister(ECR, getRegister(ECR) & 0xC0); // turn off all electrodes to enter stop
+	setRegister(ECR, ECR_backup & 0xC0); // turn off all electrodes to enter stop
 }
 
 unsigned int MPR121_t::getTouchStatus(){
@@ -232,17 +242,31 @@ void MPR121_t::digitalWrite(unsigned char electrode, unsigned char val){
 	}
 }
 
-unsigned char MPR121_t::setNumDigPins(unsigned char numPins){
+void MPR121_t::setNumDigPins(unsigned char numPins){
+
+	bool wasRunning = running;
+
 	if(numPins>8) numPins = 8; // maximum number of GPIO pins is 8 out of 12
+	
+	if(wasRunning){
+		stop(); // have to stop to change ECR
+	}
 	ECR_backup = (0x0F&(12-numPins)) | (ECR_backup&0xF0);
+	if(wasRunning){
+		run();
+	}
+	
 	//setRegister(ECR, ECR_backup);
 	// if we are already running, update ECR
 	// if not, just store the changes for when we hit run
-	if(getRegister(ECR)&0x3F) setRegister(ECR, ECR_backup);
+	//if(getRegister(ECR)&0x3F){
+
+		//setRegister(ECR, ECR_backup);
+	//}
 	//getRegister(ECR);
 	//setRegister(ECR, ECR_backup);
 	
-	return(getRegister(ECR));
+	//return(getRegister(ECR));
 }
 
 MPR121_t MPR121 = MPR121_t();
