@@ -6,23 +6,26 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-MPR121_t				KEYWORD1
+MPR121_t			KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 begin             		KEYWORD2
 run             		KEYWORD2
-stop					KEYWORD2
-reset					KEYWORD2
-enableTouchElectrodes	KEYWORD2
+stop				KEYWORD2
+reset				KEYWORD2
+enableTouchElectrodes		KEYWORD2
 applySettings			KEYWORD2
 setReleaseThreshold		KEYWORD2
 setTouchThreshold		KEYWORD2
 getTouchStatus			KEYWORD2
-setRegister				KEYWORD2
-sourEgg					KEYWORD2
-
+setRegister			KEYWORD2
+getRegister			KEYWORD2
+sourEgg				KEYWORD2
+setNumDigPins			KEYWORD2
+pinMode				KEYWORD2
+digitalWrite			KEYWORD2		
 
 #######################################
 # Constants (LITERAL1)
