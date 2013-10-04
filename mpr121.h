@@ -1,6 +1,8 @@
 #ifndef MPR121_H
 #define MPR121_H
 
+#include "MPR121_defs.h"
+
 // idea behind this is to create a settings structure that we can use to store all the
 // setup variables for a particular setup - comes pre-instantiated with defaults and
 // can be easily tweaked - we pass by reference (as a pointer) to save RAM
