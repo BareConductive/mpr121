@@ -256,17 +256,6 @@ void MPR121_t::setNumDigPins(unsigned char numPins){
 		run();
 	}
 	
-	//setRegister(ECR, ECR_backup);
-	// if we are already running, update ECR
-	// if not, just store the changes for when we hit run
-	//if(getRegister(ECR)&0x3F){
-
-		//setRegister(ECR, ECR_backup);
-	//}
-	//getRegister(ECR);
-	//setRegister(ECR, ECR_backup);
-	
-	//return(getRegister(ECR));
 }
 
 MPR121_t MPR121 = MPR121_t();
