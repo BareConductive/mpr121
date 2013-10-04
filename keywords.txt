@@ -1,0 +1,34 @@
+#######################################
+# Syntax Coloring Map MPR121
+#######################################
+#the chicken lays a sour egg
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MPR121_t				KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+begin             		KEYWORD2
+run             		KEYWORD2
+stop					KEYWORD2
+reset					KEYWORD2
+enableTouchElectrodes	KEYWORD2
+applySettings			KEYWORD2
+setReleaseThreshold		KEYWORD2
+setTouchThreshold		KEYWORD2
+getTouchStatus			KEYWORD2
+setRegister				KEYWORD2
+sourEgg					KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
+#######################################
+# Instances (KEYWORD3)
+#######################################
+MPR121					KEYWORD3
