@@ -10,6 +10,7 @@ extern "C" {
 
 MPR121_t::MPR121_t(){
 	address = 0x5A; // default address is 0x5A
+	ECR_backup = 0x00;
 }
 
 void MPR121_t::begin(){
@@ -78,19 +79,21 @@ void MPR121_t::setRegister(unsigned char r, unsigned char v){
     Wire.endTransmission();
 }
 
-unsigned char MPR121_t::getRegister(unsigned char r){
+volatile unsigned char MPR121_t::getRegister(unsigned char r){
     Wire.beginTransmission(address); 
     Wire.write(r); // set address register to read from our requested register
     Wire.endTransmission(false); // don't send stop so we can send a repeated start
     Wire.requestFrom(address,(unsigned char)1);  // just a single byte
+    Wire.endTransmission();
     return Wire.read();
 }
 
 void MPR121_t::run(){
-	setRegister(ECR, getRegister(ECR) | 0x3F); // turn on all electrodes to enter run
+	setRegister(ECR, ECR_backup); 			   // restore backup to return to run mode
 }
 
 void MPR121_t::stop(){
+	ECR_backup = getRegister(ECR);			   // backup ECR to restore when we enter run
 	setRegister(ECR, getRegister(ECR) & 0xC0); // turn off all electrodes to enter stop
 }
 
@@ -227,6 +230,19 @@ void MPR121_t::digitalWrite(unsigned char electrode, unsigned char val){
 	} else {
 		setRegister(CLR, 1<<(electrode-4));
 	}
+}
+
+unsigned char MPR121_t::setNumDigPins(unsigned char numPins){
+	if(numPins>8) numPins = 8; // maximum number of GPIO pins is 8 out of 12
+	ECR_backup = (0x0F&(12-numPins)) | (ECR_backup&0xF0);
+	//setRegister(ECR, ECR_backup);
+	// if we are already running, update ECR
+	// if not, just store the changes for when we hit run
+	if(getRegister(ECR)&0x3F) setRegister(ECR, ECR_backup);
+	//getRegister(ECR);
+	//setRegister(ECR, ECR_backup);
+	
+	return(getRegister(ECR));
 }
 
 MPR121_t MPR121 = MPR121_t();

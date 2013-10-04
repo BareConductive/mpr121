@@ -116,6 +116,8 @@ class MPR121_t
 	private:
 		unsigned char address;
 		MPR121_settings defaultSettings;
+		unsigned char ECR_backup; // so that we can re-enable the correct number of pins
+								  // when recovering from stop mode
 	public:
 		MPR121_t();
 		void begin(unsigned char address);	// I think you only need to be able to set the
@@ -131,7 +133,7 @@ class MPR121_t
 		void setReleaseThreshold(unsigned char val);
 		void setReleaseThreshold(unsigned char electrode, unsigned char val);
 		
-		void setNumDigPins(unsigned char numPins);
+		unsigned char setNumDigPins(unsigned char numPins);
 		void pinMode(unsigned char electrode, pinf_t mode); 
 		void pinMode(unsigned char electrode, int mode); 				
 		void digitalWrite(unsigned char electrode, unsigned char val);
@@ -141,7 +143,7 @@ class MPR121_t
 		unsigned int getTouchStatus();
 		
 		void setRegister(unsigned char r, unsigned char v);
-		unsigned char getRegister(unsigned char r);
+		volatile unsigned char getRegister(unsigned char r);
 
 
 };
