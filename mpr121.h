@@ -103,12 +103,12 @@ struct MPR121_settings
 
 enum pinf_t
 {
-	INPUT,
-	INPUT_PU,
-	INPUT_PD,
-	OUTPUT,
-	OUTPUT_HS,
-	OUTPUT_LS
+	INPUT,			// digital input
+	INPUT_PU,		// digital input with pullup
+	INPUT_PD,		// digital input with pulldown
+	OUTPUT,			// digital output (push-pull)
+	OUTPUT_HS,		// digital output, open collector (high side)
+	OUTPUT_LS		// digital output, open collector (low side)
 };
 
 class MPR121_t
@@ -121,13 +121,18 @@ class MPR121_t
 		bool running;
 	public:
 		MPR121_t();
-		void begin(unsigned char address);	// I think you only need to be able to set the
-											// address at the very beginning
-		void begin(); 
+
+		void setRegister(unsigned char reg, unsigned char value);
+		unsigned char getRegister(unsigned char reg);		
+		void begin(unsigned char address);
+		void begin(); // perhaps consider making this a bool?
 		void run();
 		void stop();
 		void reset();
 		void applySettings(MPR121_settings *settings);
+		
+		bool getTouchStatus(unsigned char electrode);
+		unsigned int getTouchStatus();		
 		
 		void setTouchThreshold(unsigned char val);
 		void setTouchThreshold(unsigned char electrode, unsigned char val);
@@ -138,15 +143,9 @@ class MPR121_t
 		void pinMode(unsigned char electrode, pinf_t mode); 
 		void pinMode(unsigned char electrode, int mode); 				
 		void digitalWrite(unsigned char electrode, unsigned char val);
+		bool digitalRead(unsigned char electrode);
+		void analogWrite(unsigned char electrode, unsigned char val);
 		
-		
-		bool getTouchStatus(unsigned char electrode);
-		unsigned int getTouchStatus();
-		
-		void setRegister(unsigned char r, unsigned char v);
-		volatile unsigned char getRegister(unsigned char r);
-
-
 };
 
 extern MPR121_t MPR121;
