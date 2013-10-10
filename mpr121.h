@@ -124,11 +124,11 @@ class MPR121_t
 
 		void setRegister(unsigned char reg, unsigned char value);
 		unsigned char getRegister(unsigned char reg);		
-		void begin(unsigned char address);
-		void begin(); // perhaps consider making this a bool?
+		bool begin(unsigned char address);
+		bool begin(); // perhaps consider making this a bool?
 		void run();
 		void stop();
-		void reset();
+		bool reset();
 		void applySettings(MPR121_settings *settings);
 		
 		bool getTouchStatus(unsigned char electrode);

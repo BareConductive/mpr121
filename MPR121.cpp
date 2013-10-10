@@ -39,21 +39,24 @@ unsigned char MPR121_t::getRegister(unsigned char reg){
     return Wire.read();
 }
 
-void MPR121_t::begin(){
+bool MPR121_t::begin(){
 
-	reset();
-
-	// default values...
-	applySettings(&defaultSettings);
+	if(reset()){
+		// default values...
+		applySettings(&defaultSettings);
+		return true;
+	} else {
+		return false;
+	}
 	
 }
 
-void MPR121_t::begin(unsigned char address){
+bool MPR121_t::begin(unsigned char address){
 	if(address>=0x5A && address<=0x5D) // addresses only valid 0x5A to 0x5D 
 	{
 		this->address = address; // need to be specific here
 	}
-	begin();
+	return begin();
 }
 
 void MPR121_t::run(){
@@ -65,8 +68,15 @@ void MPR121_t::stop(){
 	setRegister(ECR, ECR_backup & 0xC0); // turn off all electrodes to enter stop
 }
 
-void MPR121_t::reset(){
+bool MPR121_t::reset(){
+	// return true if we successfully reset a device at the 
+	// address we are expecting
+	
 	setRegister(SRST, 0x63); // soft reset
+	return (getRegister(AFE2)==0x24); 	// AFE2 is one of the few registers that defaults
+										// to a non-zero value - checking it is sensible
+										// reading back an incorrect value implies 
+										// something went wrong
 }
 
 void MPR121_t::applySettings(MPR121_settings *settings){
