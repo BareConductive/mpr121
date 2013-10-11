@@ -139,7 +139,6 @@ class MPR121_t
 		void stop();
 		bool reset();
 		void applySettings(MPR121_settings *settings);
-		void setProxMode(proxmode_t mode);
 		
 		bool isRunning();
 		bool isInited();
@@ -151,7 +150,8 @@ class MPR121_t
 		void setTouchThreshold(unsigned char electrode, unsigned char val);
 		void setReleaseThreshold(unsigned char val);
 		void setReleaseThreshold(unsigned char electrode, unsigned char val);
-		
+
+		void setProxMode(proxmode_t mode);		
 		void setNumDigPins(unsigned char numPins);
 		void pinMode(unsigned char electrode, pinf_t mode); 
 		void pinMode(unsigned char electrode, int mode); 				
