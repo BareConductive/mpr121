@@ -92,7 +92,7 @@ struct MPR121_settings
 		DTR(0x11),
 		AFE1(0xFF),
 		AFE2(0x38),
-		ECR(0x00),
+		ECR(0x80),
 		ACCR0(0x00),
 		ACCR1(0x00),
 		USL(0x00), 
