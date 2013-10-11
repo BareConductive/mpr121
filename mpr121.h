@@ -111,6 +111,14 @@ enum pinf_t
 	OUTPUT_LS		// digital output, open collector (low side)
 };
 
+enum proxmode_t
+{
+	DISABLED,		// proximity mode disabled
+	PROX0_1,		// proximity mode for ELE0..ELE1
+	PROX0_3,		// proximity mode for ELE0..ELE3
+	PROX0_11		// proximity mode for ELE0..ELE11		
+};
+
 class MPR121_t
 {
 	private:
@@ -131,6 +139,7 @@ class MPR121_t
 		void stop();
 		bool reset();
 		void applySettings(MPR121_settings *settings);
+		void setProxMode(proxmode_t mode);
 		
 		bool isRunning();
 		bool isInited();
@@ -147,6 +156,7 @@ class MPR121_t
 		void pinMode(unsigned char electrode, pinf_t mode); 
 		void pinMode(unsigned char electrode, int mode); 				
 		void digitalWrite(unsigned char electrode, unsigned char val);
+		void digitalToggle(unsigned char electrode);
 		bool digitalRead(unsigned char electrode);
 		void analogWrite(unsigned char electrode, unsigned char val);
 		

@@ -127,6 +127,32 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 	if(wasRunning) run();	
 }
 
+void MPR121_t::setProxMode(proxmode_t mode){
+
+	bool wasRunning = running;
+
+	if(wasRunning) stop();
+
+	switch(mode){
+		case DISABLED:
+			ECR_backup &= ~(3<<4);	// ELEPROX[0:1] = 00
+			break;
+		case PROX0_1:
+			ECR_backup |=  (1<<4);	// ELEPROX[0:1] = 01
+			ECR_backup &= ~(1<<5);			
+			break;
+		case PROX0_3:
+			ECR_backup &= ~(1<<4);	// ELEPROX[0:1] = 10
+			ECR_backup |=  (1<<5);			
+			break;
+		case PROX0_11:
+			ECR_backup |=  (3<<4);	// ELEPROX[0:1] = 11
+			break;
+	}
+	
+	if(wasRunning) run();
+}
+
 bool MPR121_t::isRunning(){
 	return running;
 }
@@ -288,6 +314,11 @@ void MPR121_t::digitalWrite(unsigned char electrode, unsigned char val){
 	} else {
 		setRegister(CLR, 1<<(electrode-4));
 	}
+}
+
+void MPR121_t::digitalToggle(unsigned char electrode){
+	if(electrode<4 || electrode>11 || !inited) return; // avoid out of bounds behaviour
+	setRegister(TOG, 1<<(electrode-4));	
 }
 
 bool MPR121_t::digitalRead(unsigned char electrode){
