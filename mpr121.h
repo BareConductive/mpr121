@@ -119,17 +119,21 @@ class MPR121_t
 		unsigned char ECR_backup; // so that we can re-enable the correct number of pins
 								  // when recovering from stop mode
 		bool running;
+		bool inited;
 	public:
 		MPR121_t();
 
 		void setRegister(unsigned char reg, unsigned char value);
 		unsigned char getRegister(unsigned char reg);		
 		bool begin(unsigned char address);
-		bool begin(); // perhaps consider making this a bool?
+		bool begin();
 		void run();
 		void stop();
 		bool reset();
 		void applySettings(MPR121_settings *settings);
+		
+		bool isRunning();
+		bool isInited();
 		
 		bool getTouchStatus(unsigned char electrode);
 		unsigned int getTouchStatus();		
