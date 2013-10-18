@@ -9,6 +9,7 @@ extern "C" {
 #include <Wire.h>
 
 MPR121_t::MPR121_t(){
+	Wire.begin();
 	address = 0x5A; // default address is 0x5A
 	ECR_backup = 0x00;
 	running = false;
