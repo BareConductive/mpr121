@@ -144,7 +144,7 @@ unsigned int MPR121_t::getTouchStatus(){
 }
 
 bool MPR121_t::getTouchStatus(unsigned char electrode){
-	if(electrode>11 || !inited) return false; // avoid out of bound behaviour
+	if(electrode>12 || !inited) return false; // avoid out of bound behaviour
 
 	if(electrode<8){
 		return((getRegister(TS1)>>electrode) & 0x01);
@@ -175,7 +175,7 @@ void MPR121_t::getFilteredData(int (&data)[13]){
 }
 
 unsigned int MPR121_t::getFilteredData(unsigned char electrode){
-	if(electrode>11 || !inited) return(0xFFFF); // avoid out of bounds behaviour
+	if(electrode>12 || !inited) return(0xFFFF); // avoid out of bounds behaviour
 	unsigned char LSB, MSB;
 
     Wire.beginTransmission(address); 
@@ -190,6 +190,30 @@ unsigned int MPR121_t::getFilteredData(unsigned char electrode){
     } else {
 		return(0xFFFF);      
     }
+}
+
+void MPR121_t::getBaselineData(int (&data)[13]){
+	if(!inited) return;
+
+    Wire.beginTransmission(address); 
+    Wire.write(E0BV); // set address register to read from the start of the baseline data
+    Wire.endTransmission(false); // don't send stop so we can send a repeated start
+  
+    if(Wire.requestFrom(address,(unsigned char)13)==13){
+		for(int i=0; i<13; i++){ // 13 filtered values
+		  data[i] = Wire.read()<<2;
+		}     
+    } else {
+		for(int i=0; i<13; i++){         
+		  data[i] = 0xFFFF; // this is an invalid filtered value, indicating an error
+		}        
+    }
+}
+
+unsigned int MPR121_t::getBaselineData(unsigned char electrode){
+	if(electrode>12 || !inited) return(0xFFFF); // avoid out of bounds behaviour
+  
+	return(getRegister(E0BV+electrode)<<2);
 }
 
 void MPR121_t::setTouchThreshold(unsigned char val){

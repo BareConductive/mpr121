@@ -147,8 +147,12 @@ class MPR121_t
 		
 		bool getTouchStatus(unsigned char electrode);
 		unsigned int getTouchStatus();		
+		
 		void getFilteredData(int (&data)[13]);
 		unsigned int getFilteredData(unsigned char electrode);
+		
+		void getBaselineData(int (&data)[13]);
+		unsigned int getBaselineData(unsigned char electrode);		
 		
 		void setTouchThreshold(unsigned char val);
 		void setTouchThreshold(unsigned char electrode, unsigned char val);
