@@ -92,7 +92,7 @@ struct MPR121_settings
 		DTR(0x11),
 		AFE1(0xFF),
 		AFE2(0x38),
-		ECR(0x80),
+		ECR(0x8C), // default to fast baseline startup and 12 electrodes enabled, no prox
 		ACCR0(0x00),
 		ACCR1(0x00),
 		USL(0x00), 
@@ -103,10 +103,12 @@ struct MPR121_settings
 
 enum pinf_t
 {
-	INPUT,			// digital input
+	// INPUT and OUTPUT are already defined by Arduino, use its definitions
+	
+	//INPUT,			// digital input
 	INPUT_PU,		// digital input with pullup
 	INPUT_PD,		// digital input with pulldown
-	OUTPUT,			// digital output (push-pull)
+	//OUTPUT,			// digital output (push-pull)
 	OUTPUT_HS,		// digital output, open collector (high side)
 	OUTPUT_LS		// digital output, open collector (low side)
 };
@@ -145,11 +147,15 @@ class MPR121_t
 		
 		bool getTouchStatus(unsigned char electrode);
 		unsigned int getTouchStatus();		
+		void getFilteredData(int (&data)[13]);
+		unsigned int getFilteredData(unsigned char electrode);
 		
 		void setTouchThreshold(unsigned char val);
 		void setTouchThreshold(unsigned char electrode, unsigned char val);
 		void setReleaseThreshold(unsigned char val);
 		void setReleaseThreshold(unsigned char electrode, unsigned char val);
+		unsigned char getTouchThreshold(unsigned char electrode);
+		unsigned char getReleaseThreshold(unsigned char electrode);		
 
 		void setProxMode(proxmode_t mode);		
 		void setNumDigPins(unsigned char numPins);
