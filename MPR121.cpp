@@ -5,8 +5,6 @@ extern "C" {
 }
 
 #include "MPR121.h"
-#include "MPR121_defs.h"
-#include <Wire.h>
 #include <Arduino.h>
 
 MPR121_t::MPR121_t(){
