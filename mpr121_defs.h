@@ -3,8 +3,8 @@
 	April 8, 2010
 	by: Jim Lindblom
 
-        updated June 22, 2012
-        by: Stefan Dzisiewski-Smith
+    updated June 22, 2012
+    by: Stefan Dzisiewski-Smith
 */
 
 #ifndef MPR121_DEFS_H

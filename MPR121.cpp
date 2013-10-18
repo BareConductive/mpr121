@@ -7,6 +7,7 @@ extern "C" {
 #include "MPR121.h"
 #include "MPR121_defs.h"
 #include <Wire.h>
+#include <Arduino.h>
 
 MPR121_t::MPR121_t(){
 	Wire.begin();	
@@ -125,7 +126,8 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 	inited=true;
 	
 	setTouchThreshold(settings->TTHRESH);
-	setReleaseThreshold(settings->RTHRESH);	
+	setReleaseThreshold(settings->RTHRESH);
+	setInterruptPin(settings->INTERRUPT);	
 	
 	if(wasRunning) run();	
 }
@@ -138,22 +140,24 @@ bool MPR121_t::isInited(){
 	return inited;
 }
 
-unsigned int MPR121_t::getTouchStatus(){
-	if(!inited) return 0xFFFF;
-	return((unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8));
-}
-
-bool MPR121_t::getTouchStatus(unsigned char electrode){
-	if(electrode>12 || !inited) return false; // avoid out of bound behaviour
-
-	if(electrode<8){
-		return((getRegister(TS1)>>electrode) & 0x01);
-	} else {
-		return((getRegister(TS2)>>(electrode-8)) & 0x01);;
+void MPR121_t::updateTouchData(){
+	if(!inited) return;
+	unsigned int scratch;
+	
+	scratch = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
+	
+	for(unsigned char i=0; i<13; i++){
+		touchData[i] = ((scratch>>i)&1);
 	}
 }
 
-void MPR121_t::getFilteredData(int (&data)[13]){
+bool MPR121_t::getTouchData(unsigned char electrode){
+	if(electrode>12 || !inited) return false; // avoid out of bound behaviour
+
+	return(touchData[electrode]);
+}
+
+void MPR121_t::updateFilteredData(){
 	if(!inited) return;
 	unsigned char LSB, MSB;
 
@@ -165,34 +169,22 @@ void MPR121_t::getFilteredData(int (&data)[13]){
 		for(int i=0; i<13; i++){ // 13 filtered values
 		  LSB = Wire.read();
 		  MSB = Wire.read();
-		  data[i] = ((MSB << 8) | LSB);
+		  filteredData[i] = ((MSB << 8) | LSB);
 		}     
     } else {
 		for(int i=0; i<13; i++){         
-		  data[i] = 0xFFFF; // this is an invalid filtered value, indicating an error
+		  filteredData[i] = 0xFFFF; // this is an invalid filtered value indicating error
 		}        
     }
 }
 
-unsigned int MPR121_t::getFilteredData(unsigned char electrode){
+int MPR121_t::getFilteredData(unsigned char electrode){
 	if(electrode>12 || !inited) return(0xFFFF); // avoid out of bounds behaviour
-	unsigned char LSB, MSB;
 
-    Wire.beginTransmission(address); 
-    Wire.write(E0FDL+(2*electrode)); // set address register to read from selected 
-    								 // electrode's filtered daa
-    Wire.endTransmission(false); // don't send stop so we can send a repeated start
-  
-    if(Wire.requestFrom(address,(unsigned char)2)==2){
-	  LSB = Wire.read();
-	  MSB = Wire.read();
-	  return(((MSB << 8) | LSB));    
-    } else {
-		return(0xFFFF);      
-    }
+	return(filteredData[electrode]);
 }
 
-void MPR121_t::getBaselineData(int (&data)[13]){
+void MPR121_t::updateBaselineData(){
 	if(!inited) return;
 
     Wire.beginTransmission(address); 
@@ -201,19 +193,25 @@ void MPR121_t::getBaselineData(int (&data)[13]){
   
     if(Wire.requestFrom(address,(unsigned char)13)==13){
 		for(int i=0; i<13; i++){ // 13 filtered values
-		  data[i] = Wire.read()<<2;
+		  baselineData[i] = Wire.read()<<2;
 		}     
     } else {
 		for(int i=0; i<13; i++){         
-		  data[i] = 0xFFFF; // this is an invalid filtered value, indicating an error
+		  baselineData[i] = 0xFFFF; // this is an invalid filtered value, indicating an error
 		}        
     }
 }
 
-unsigned int MPR121_t::getBaselineData(unsigned char electrode){
+int MPR121_t::getBaselineData(unsigned char electrode){
 	if(electrode>12 || !inited) return(0xFFFF); // avoid out of bounds behaviour
   
-	return(getRegister(E0BV+electrode)<<2);
+	return(baselineData[electrode]);
+}
+
+void MPR121_t::updateAll(){
+	updateTouchData();
+	updateBaselineData();
+	updateFilteredData();
 }
 
 void MPR121_t::setTouchThreshold(unsigned char val){
@@ -279,6 +277,17 @@ unsigned char MPR121_t::getTouchThreshold(unsigned char electrode){
 unsigned char MPR121_t::getReleaseThreshold(unsigned char electrode){
 	if(electrode>12 || !inited) return(0xFF); // avoid out of bounds behaviour
 	return(getRegister(E0RTH+(electrode<<1)));
+}
+
+void MPR121_t::setInterruptPin(unsigned char pin){
+	if(!inited) return;
+	//pinMode(pin, INPUT);
+	interruptPin = pin;		
+	
+}
+
+bool MPR121_t::newTouchDetected(){
+	//return(!digitalRead(interruptPin));
 }
 
 void MPR121_t::setProxMode(proxmode_t mode){
@@ -383,7 +392,7 @@ void MPR121_t::pinMode(unsigned char electrode, int mode){
 	
 	unsigned char bitmask = 1<<(electrode-4);	
 	
-	if(mode == 1){ 	// 1 == OUTPUT	
+	if(mode == OUTPUT){ 
 		// EN = 1
 		// DIR = 1
 		// CTL0 = 0
@@ -393,7 +402,7 @@ void MPR121_t::pinMode(unsigned char electrode, int mode){
 		setRegister(CTL0, getRegister(CTL0) & ~bitmask);
 		setRegister(CTL1, getRegister(CTL1) & ~bitmask);				
 			
-	} else if(mode == 0){  // 0 == INPUT
+	} else if(mode == INPUT){
 		// EN = 1
 		// DIR = 0
 		// CTL0 = 0

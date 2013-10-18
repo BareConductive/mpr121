@@ -11,6 +11,8 @@ struct MPR121_settings
 	// touch and release thresholds
 	unsigned char TTHRESH;
 	unsigned char RTHRESH;
+	
+	unsigned char INTERRUPT;
 
 	// general electrode touch sense baseline filters
 	// rising filter
@@ -67,6 +69,8 @@ struct MPR121_settings
 	MPR121_settings():
 		TTHRESH(40),
 		RTHRESH(20),
+		INTERRUPT(4), 	// note that this is not a hardware interrupt, just the digital
+						// pin that the MPR121 ~INT pin is connected to
 		MHDR(0x3F),
 		NHDR(0x3F),
 		NCLR(0x05),
@@ -126,10 +130,16 @@ class MPR121_t
 	private:
 		unsigned char address;
 		MPR121_settings defaultSettings;
-		unsigned char ECR_backup; // so that we can re-enable the correct number of pins
+		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
 								  // when recovering from stop mode
 		bool running;
 		bool inited;
+		int interruptPin;
+		
+		int filteredData[13];
+		int baselineData[13];
+		bool touchData[13];
+		
 	public:
 		MPR121_t();
 
@@ -145,21 +155,24 @@ class MPR121_t
 		bool isRunning();
 		bool isInited();
 		
-		bool getTouchStatus(unsigned char electrode);
-		unsigned int getTouchStatus();		
+		void updateTouchData();
+		void updateBaselineData();
+		void updateFilteredData();
+		void updateAll();
 		
-		void getFilteredData(int (&data)[13]);
-		unsigned int getFilteredData(unsigned char electrode);
-		
-		void getBaselineData(int (&data)[13]);
-		unsigned int getBaselineData(unsigned char electrode);		
+		bool getTouchData(unsigned char electrode);	
+		int getFilteredData(unsigned char electrode);
+		int getBaselineData(unsigned char electrode);		
 		
 		void setTouchThreshold(unsigned char val);
 		void setTouchThreshold(unsigned char electrode, unsigned char val);
 		void setReleaseThreshold(unsigned char val);
 		void setReleaseThreshold(unsigned char electrode, unsigned char val);
 		unsigned char getTouchThreshold(unsigned char electrode);
-		unsigned char getReleaseThreshold(unsigned char electrode);		
+		unsigned char getReleaseThreshold(unsigned char electrode);	
+		
+		void setInterruptPin(unsigned char pin);
+		bool newTouchDetected();	
 
 		void setProxMode(proxmode_t mode);		
 		void setNumDigPins(unsigned char numPins);
