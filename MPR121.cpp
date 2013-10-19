@@ -278,6 +278,7 @@ unsigned char MPR121_t::getReleaseThreshold(unsigned char electrode){
 }
 
 void MPR121_t::setInterruptPin(unsigned char pin){
+	// :: here forces the compiler to use Arduino's pinMode, not ours within the class
 	if(!inited) return;
 	::pinMode(pin, INPUT_PULLUP);
 	interruptPin = pin;		
@@ -285,6 +286,7 @@ void MPR121_t::setInterruptPin(unsigned char pin){
 }
 
 bool MPR121_t::touchStatusChanged(){
+	// :: here forces the compiler to use Arduino's digitalRead, not ours within the class
 	return(!::digitalRead(interruptPin));
 }
 
