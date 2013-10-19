@@ -279,13 +279,13 @@ unsigned char MPR121_t::getReleaseThreshold(unsigned char electrode){
 
 void MPR121_t::setInterruptPin(unsigned char pin){
 	if(!inited) return;
-	//pinMode(pin, INPUT);
+	::pinMode(pin, INPUT_PULLUP);
 	interruptPin = pin;		
 	
 }
 
-bool MPR121_t::newTouchDetected(){
-	//return(!digitalRead(interruptPin));
+bool MPR121_t::touchStatusChanged(){
+	return(!::digitalRead(interruptPin));
 }
 
 void MPR121_t::setProxMode(proxmode_t mode){

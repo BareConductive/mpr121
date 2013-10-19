@@ -173,7 +173,7 @@ class MPR121_t
 		unsigned char getReleaseThreshold(unsigned char electrode);	
 		
 		void setInterruptPin(unsigned char pin);
-		bool newTouchDetected();	
+		bool touchStatusChanged();	
 
 		void setProxMode(proxmode_t mode);		
 		void setNumDigPins(unsigned char numPins);
