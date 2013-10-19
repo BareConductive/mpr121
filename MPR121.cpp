@@ -17,18 +17,26 @@ MPR121_t::MPR121_t(){
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
 
+	bool wasRunning = false;;
+
 	if(reg==ECR){	// if we are modifying ECR, update our internal running status
 		if(value&0x3F){
 			running = true;
 		} else {
 			running = false;
 		} 
+	} else if(reg<CTL0){
+		wasRunning = running;
+		if(wasRunning) stop(); 	// we should ALWAYS be in stop mode for this unless 
+								// modding ECR or GPIO / LED register
 	}
-
+	
     Wire.beginTransmission(address);
     Wire.write(reg);
     Wire.write(value);
     Wire.endTransmission();
+    
+    if(wasRunning) run();		// restore run mode if necessary
 }
 
 unsigned char MPR121_t::getRegister(unsigned char reg){
@@ -85,8 +93,8 @@ bool MPR121_t::reset(){
 
 void MPR121_t::applySettings(MPR121_settings *settings){
 	bool wasRunning = running;
-	if(wasRunning) stop();  // we should only change ECR whilst stopped - might as well
-							// stop for any wholesale settings change
+	if(wasRunning) stop();  // can't change most regs when running - checking here avoids
+							// multiple stop() / run() calls
 
 	setRegister(MHDR,settings->MHDR);
 	setRegister(NHDR,settings->NHDR);
@@ -217,7 +225,7 @@ void MPR121_t::setTouchThreshold(unsigned char val){
 	bool wasRunning = running;
 	
 	if(wasRunning) stop();	// can only change thresholds when not running
-							// checking here avoids multiple stop / starts
+							// checking here avoids multiple stop() / run() calls
 	
 	for(unsigned char i=0; i<13; i++){
 		setTouchThreshold(i, val);
@@ -228,16 +236,10 @@ void MPR121_t::setTouchThreshold(unsigned char val){
 
 void MPR121_t::setTouchThreshold(unsigned char electrode, unsigned char val){
 	if(electrode>12 || !inited) return; // avoid out of bounds behaviour
-	bool wasRunning = running;
-	
-	if(wasRunning) stop();	// can only change thresholds when not running
-							// have to check here as well to catch single calls
 	
 	setRegister(E0TTH + (electrode<<1), val); 	// this relies on the internal register
 												// map of the MPR121 and uses <<1 as
-												// a quick equivalent to x2
-
-	if(wasRunning) run();																							
+												// a quick equivalent to x2																						
 }
 
 void MPR121_t::setReleaseThreshold(unsigned char val){
@@ -256,16 +258,10 @@ void MPR121_t::setReleaseThreshold(unsigned char val){
 
 void MPR121_t::setReleaseThreshold(unsigned char electrode, unsigned char val){
 	if(electrode>12 || !inited) return; // avoid out of bounds behaviour
-	bool wasRunning = running;
-	
-	if(wasRunning) stop();	// can only change thresholds when not running
-							// have to check here as well to catch single calls	
-	
+
 	setRegister(E0RTH + (electrode<<1), val); 	// this relies on the internal register
 													// map of the MPR121 and uses <<1 as
 													// a quick equivalent to x2
-	if(wasRunning) run();
-																									
 }
 
 unsigned char MPR121_t::getTouchThreshold(unsigned char electrode){
