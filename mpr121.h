@@ -106,7 +106,7 @@ struct MPR121_settings
 	
 };
 
-enum pinf_t
+enum mpr121_pinf_t
 {
 	// INPUT and OUTPUT are already defined by Arduino, use its definitions
 	
@@ -118,12 +118,20 @@ enum pinf_t
 	OUTPUT_LS		// digital output, open collector (low side)
 };
 
-enum proxmode_t
+enum mpr121_proxmode_t
 {
 	DISABLED,		// proximity mode disabled
 	PROX0_1,		// proximity mode for ELE0..ELE1
 	PROX0_3,		// proximity mode for ELE0..ELE3
 	PROX0_11		// proximity mode for ELE0..ELE11		
+};
+
+enum mpr121_error_t
+{
+	NO_ERROR,
+	ADDRESS_NOT_FOUND,
+	OVER_CURRENT_FLAG,
+	OUT_OF_RANGE,
 };
 
 class MPR121_t
@@ -153,6 +161,8 @@ class MPR121_t
 		bool reset();
 		void applySettings(MPR121_settings *settings);
 		
+		mpr121_error_t getError();
+		
 		bool isRunning();
 		bool isInited();
 		
@@ -175,9 +185,9 @@ class MPR121_t
 		void setInterruptPin(unsigned char pin);
 		bool touchStatusChanged();	
 
-		void setProxMode(proxmode_t mode);		
+		void setProxMode(mpr121_proxmode_t mode);		
 		void setNumDigPins(unsigned char numPins);
-		void pinMode(unsigned char electrode, pinf_t mode); 
+		void pinMode(unsigned char electrode, mpr121_pinf_t mode); 
 		void pinMode(unsigned char electrode, int mode); 				
 		void digitalWrite(unsigned char electrode, unsigned char val);
 		void digitalToggle(unsigned char electrode);

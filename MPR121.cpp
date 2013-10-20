@@ -139,6 +139,10 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 	if(wasRunning) run();	
 }
 
+mpr121_error_t MPR121_t::getError(){
+	return(NO_ERROR);
+}
+
 bool MPR121_t::isRunning(){
 	return running;
 }
@@ -287,7 +291,7 @@ bool MPR121_t::touchStatusChanged(){
 	return(!::digitalRead(interruptPin));
 }
 
-void MPR121_t::setProxMode(proxmode_t mode){
+void MPR121_t::setProxMode(mpr121_proxmode_t mode){
 
 	if(!inited) return;
 
@@ -331,7 +335,7 @@ void MPR121_t::setNumDigPins(unsigned char numPins){
 	
 }
 
-void MPR121_t::pinMode(unsigned char electrode, pinf_t mode){
+void MPR121_t::pinMode(unsigned char electrode, mpr121_pinf_t mode){
 	if(electrode<4 || electrode >11 || !inited) return; // only valid for ELE4..ELE11
 											 			//				  LED0..LED7
 											 
