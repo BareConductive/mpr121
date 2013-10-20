@@ -85,10 +85,11 @@ bool MPR121_t::reset(){
 	// return true if we successfully reset a device at the 
 	// address we are expecting
 	setRegister(SRST, 0x63); // soft reset
-	return (getRegister(AFE2)==0x24); 	// AFE2 is one of the few registers that defaults
-										// to a non-zero value - checking it is sensible
-										// reading back an incorrect value implies 
-										// something went wrong
+	return (getRegister(AFE2)==0x24 && (getRegister(TS2)&0x80)==0); 	
+
+	// AFE2 is one of the few registers that defaults to a non-zero value - checking it 
+	// is sensible reading back an incorrect value implies something went wrong - we also 
+	// check TS2 bit 7 to see if we have an overcurrent flag set
 }
 
 void MPR121_t::applySettings(MPR121_settings *settings){
