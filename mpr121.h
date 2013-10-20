@@ -130,8 +130,10 @@ enum mpr121_error_t
 {
 	NO_ERROR,
 	ADDRESS_NOT_FOUND,
-	OVER_CURRENT_FLAG,
+	READBACK_FAIL,
+	OVERCURRENT_FLAG,
 	OUT_OF_RANGE,
+	NOT_INITED
 };
 
 class MPR121_t
@@ -144,6 +146,7 @@ class MPR121_t
 		bool running;
 		bool inited;
 		int interruptPin;
+		mpr121_error_t error;
 		
 		int filteredData[13];
 		int baselineData[13];

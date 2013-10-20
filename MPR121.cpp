@@ -13,6 +13,7 @@ MPR121_t::MPR121_t(){
 	ECR_backup = 0x00;
 	running = false;
 	inited = false;
+	error = NOT_INITED;
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -34,18 +35,23 @@ void MPR121_t::setRegister(unsigned char reg, unsigned char value){
     Wire.beginTransmission(address);
     Wire.write(reg);
     Wire.write(value);
-    Wire.endTransmission();
+    if(Wire.endTransmission()==4) error = ADDRESS_NOT_FOUND;
     
     if(wasRunning) run();		// restore run mode if necessary
 }
 
 unsigned char MPR121_t::getRegister(unsigned char reg){
+	unsigned char scratch;
+
     Wire.beginTransmission(address); 
     Wire.write(reg); // set address register to read from our requested register
     Wire.endTransmission(false); // don't send stop so we can send a repeated start
     Wire.requestFrom(address,(unsigned char)1);  // just a single byte
-    Wire.endTransmission();
-    return Wire.read();
+    if(Wire.endTransmission()==4) error = ADDRESS_NOT_FOUND;
+    scratch = Wire.read();
+    if(reg == TS2 && ((scratch&0x80)!=0)) error = OVERCURRENT_FLAG;
+    if((reg == OORS1 || reg == OORS2) && (scratch!=0)) error = OUT_OF_RANGE;    
+    return scratch;
 }
 
 bool MPR121_t::begin(){
@@ -84,12 +90,21 @@ void MPR121_t::stop(){
 bool MPR121_t::reset(){
 	// return true if we successfully reset a device at the 
 	// address we are expecting
-	setRegister(SRST, 0x63); // soft reset
-	return (getRegister(AFE2)==0x24 && (getRegister(TS2)&0x80)==0); 	
-
+	
 	// AFE2 is one of the few registers that defaults to a non-zero value - checking it 
 	// is sensible reading back an incorrect value implies something went wrong - we also 
 	// check TS2 bit 7 to see if we have an overcurrent flag set
+	
+	setRegister(SRST, 0x63); // soft reset
+	if(getRegister(AFE2)!=0x24){
+		error = READBACK_FAIL;
+		return(false);
+	} else if((getRegister(TS2)&0x80)!=0){
+		error = OVERCURRENT_FLAG;
+		return(false);
+	} else {
+		return(true);
+	}	
 }
 
 void MPR121_t::applySettings(MPR121_settings *settings){
@@ -140,7 +155,13 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 }
 
 mpr121_error_t MPR121_t::getError(){
-	return(NO_ERROR);
+	if(!inited) return(NOT_INITED);
+	// returns only the most recent error - each error overwrites the previous one
+	if(error==NO_ERROR){		// if we don't have an error, check for OOR on both
+		getRegister(OORS1);		// OOR registers - we may not have read them yet
+		getRegister(OORS2);		// (whereas the other errors should have been caught)
+	}
+	return(error);
 }
 
 bool MPR121_t::isRunning(){
