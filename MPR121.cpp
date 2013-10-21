@@ -14,6 +14,10 @@ MPR121_t::MPR121_t(){
 	running = false;
 	inited = false;
 	error = NOT_INITED;
+	for(unsigned char i=0; i<13; i++){
+		lastTouchData[i] = 0;
+		touchData[i] = 0;
+	}	
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -35,7 +39,7 @@ void MPR121_t::setRegister(unsigned char reg, unsigned char value){
     Wire.beginTransmission(address);
     Wire.write(reg);
     Wire.write(value);
-    if(Wire.endTransmission()==4) error = ADDRESS_NOT_FOUND;
+    if(Wire.endTransmission()!=0) error = ADDRESS_NOT_FOUND;
     
     if(wasRunning) run();		// restore run mode if necessary
 }
@@ -45,9 +49,11 @@ unsigned char MPR121_t::getRegister(unsigned char reg){
 
     Wire.beginTransmission(address); 
     Wire.write(reg); // set address register to read from our requested register
-    Wire.endTransmission(false); // don't send stop so we can send a repeated start
+    Wire.endTransmission(false); // repeated start
+    //if(Wire.endTransmission(false)!=0) error = ADDRESS_NOT_FOUND; // repeated start
     Wire.requestFrom(address,(unsigned char)1);  // just a single byte
-    if(Wire.endTransmission()==4) error = ADDRESS_NOT_FOUND;
+    if(Wire.endTransmission()!=0) error = ADDRESS_NOT_FOUND;
+    //Wire.endTransmission();
     scratch = Wire.read();
     if(reg == TS2 && ((scratch&0x80)!=0)) error = OVERCURRENT_FLAG;
     if((reg == OORS1 || reg == OORS2) && (scratch!=0)) error = OUT_OF_RANGE;    
@@ -55,14 +61,13 @@ unsigned char MPR121_t::getRegister(unsigned char reg){
 }
 
 bool MPR121_t::begin(){
-
+	inited = true;	// always return true to show that we TRIED to init - the init error
+					// should only tell us that we forgot to call begin()
 	if(reset()){
 		// default values...
 		applySettings(&defaultSettings);
-		inited = true;
 		return true;
 	} else {
-		inited = false;
 		return false;
 	}
 	
@@ -96,6 +101,8 @@ bool MPR121_t::reset(){
 	// check TS2 bit 7 to see if we have an overcurrent flag set
 	
 	setRegister(SRST, 0x63); // soft reset
+	if(error == ADDRESS_NOT_FOUND) return(false); 	// stops us overwriting the address 
+													// error with anything else
 	if(getRegister(AFE2)!=0x24){
 		error = READBACK_FAIL;
 		return(false);
@@ -179,12 +186,13 @@ void MPR121_t::updateTouchData(){
 	scratch = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
 	
 	for(unsigned char i=0; i<13; i++){
+		lastTouchData[i] = touchData[i];
 		touchData[i] = ((scratch>>i)&1);
 	}
 }
 
 bool MPR121_t::getTouchData(unsigned char electrode){
-	if(electrode>12 || !inited) return false; // avoid out of bound behaviour
+	if(electrode>12 || !inited) return false; // avoid out of bounds behaviour
 
 	return(touchData[electrode]);
 }
@@ -238,6 +246,16 @@ int MPR121_t::getBaselineData(unsigned char electrode){
 	if(electrode>12 || !inited) return(0xFFFF); // avoid out of bounds behaviour
   
 	return(baselineData[electrode]);
+}
+
+bool MPR121_t::isNewTouch(unsigned char electrode){
+	if(electrode>12 || !inited) return(false); // avoid out of bounds behaviour	
+	return((lastTouchData[electrode] == false) && (touchData[electrode] == true));
+}
+
+bool MPR121_t::isNewRelease(unsigned char electrode){
+	if(electrode>12 || !inited) return(false); // avoid out of bounds behaviour	
+	return((lastTouchData[electrode] == true) && (touchData[electrode] == false));
 }
 
 void MPR121_t::updateAll(){
