@@ -39,7 +39,7 @@ void MPR121_t::setRegister(unsigned char reg, unsigned char value){
     Wire.beginTransmission(address);
     Wire.write(reg);
     Wire.write(value);
-    if(Wire.endTransmission()!=0) error = ADDRESS_NOT_FOUND;
+    if(Wire.endTransmission()!=0) error = ADDRESS_UNKNOWN;
     
     if(wasRunning) run();		// restore run mode if necessary
 }
@@ -50,10 +50,8 @@ unsigned char MPR121_t::getRegister(unsigned char reg){
     Wire.beginTransmission(address); 
     Wire.write(reg); // set address register to read from our requested register
     Wire.endTransmission(false); // repeated start
-    //if(Wire.endTransmission(false)!=0) error = ADDRESS_NOT_FOUND; // repeated start
     Wire.requestFrom(address,(unsigned char)1);  // just a single byte
-    if(Wire.endTransmission()!=0) error = ADDRESS_NOT_FOUND;
-    //Wire.endTransmission();
+    if(Wire.endTransmission()!=0) error = ADDRESS_UNKNOWN;
     scratch = Wire.read();
     if(reg == TS2 && ((scratch&0x80)!=0)) error = OVERCURRENT_FLAG;
     if((reg == OORS1 || reg == OORS2) && (scratch!=0)) error = OUT_OF_RANGE;    
@@ -101,7 +99,7 @@ bool MPR121_t::reset(){
 	// check TS2 bit 7 to see if we have an overcurrent flag set
 	
 	setRegister(SRST, 0x63); // soft reset
-	if(error == ADDRESS_NOT_FOUND) return(false); 	// stops us overwriting the address 
+	if(error == ADDRESS_UNKNOWN) return(false); 	// stops us overwriting the address 
 													// error with anything else
 	if(getRegister(AFE2)!=0x24){
 		error = READBACK_FAIL;

@@ -129,7 +129,8 @@ enum mpr121_proxmode_t
 enum mpr121_error_t
 {
 	NO_ERROR,
-	ADDRESS_NOT_FOUND,
+	RETURN_TO_SENDER,
+	ADDRESS_UNKNOWN,
 	READBACK_FAIL,
 	OVERCURRENT_FLAG,
 	OUT_OF_RANGE,
@@ -150,8 +151,8 @@ class MPR121_t
 		
 		int filteredData[13];
 		int baselineData[13];
-		bool touchData[13];
-		bool lastTouchData[13];
+		bool touchData[13];		  // depending on what the compiler does, these may be
+		bool lastTouchData[13];	  // more efficient as unsigned ints (packed)
 		
 	public:
 		MPR121_t();
