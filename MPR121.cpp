@@ -152,6 +152,8 @@ void MPR121_t::applySettings(MPR121_settings *settings){
 	
 	inited=true;
 	
+	if(error == NOT_INITED) error = NO_ERROR; 	// if our only error is that we are not 
+												// inited, clear the error
 	setTouchThreshold(settings->TTHRESH);
 	setReleaseThreshold(settings->RTHRESH);
 	setInterruptPin(settings->INTERRUPT);	
