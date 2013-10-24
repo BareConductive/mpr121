@@ -14,10 +14,8 @@ MPR121_t::MPR121_t(){
 	running = false;
 	inited = false;
 	error = NOT_INITED;
-	for(unsigned char i=0; i<13; i++){
-		lastTouchData[i] = 0;
-		touchData[i] = 0;
-	}	
+	touchData = 0;
+	lastTouchData = 0;	
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -181,20 +179,21 @@ bool MPR121_t::isInited(){
 
 void MPR121_t::updateTouchData(){
 	if(!inited) return;
-	unsigned int scratch;
 	
-	scratch = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
-	
-	for(unsigned char i=0; i<13; i++){
-		lastTouchData[i] = touchData[i];
-		touchData[i] = ((scratch>>i)&1);
-	}
+	lastTouchData = touchData;
+	touchData = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
 }
 
 bool MPR121_t::getTouchData(unsigned char electrode){
 	if(electrode>12 || !inited) return false; // avoid out of bounds behaviour
 
-	return(touchData[electrode]);
+	return((touchData>>electrode)&1);
+}
+
+bool MPR121_t::getLastTouchData(unsigned char electrode){
+	if(electrode>12 || !inited) return false; // avoid out of bounds behaviour
+
+	return((lastTouchData>>electrode)&1);
 }
 
 void MPR121_t::updateFilteredData(){
@@ -250,12 +249,12 @@ int MPR121_t::getBaselineData(unsigned char electrode){
 
 bool MPR121_t::isNewTouch(unsigned char electrode){
 	if(electrode>12 || !inited) return(false); // avoid out of bounds behaviour	
-	return((lastTouchData[electrode] == false) && (touchData[electrode] == true));
+	return((getLastTouchData(electrode) == false) && (getTouchData(electrode) == true));
 }
 
 bool MPR121_t::isNewRelease(unsigned char electrode){
 	if(electrode>12 || !inited) return(false); // avoid out of bounds behaviour	
-	return((lastTouchData[electrode] == true) && (touchData[electrode] == false));
+	return((getLastTouchData(electrode) == true) && (getTouchData(electrode) == false));
 }
 
 void MPR121_t::updateAll(){

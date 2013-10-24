@@ -151,8 +151,9 @@ class MPR121_t
 		
 		int filteredData[13];
 		int baselineData[13];
-		bool touchData[13];		  // depending on what the compiler does, these may be
-		bool lastTouchData[13];	  // more efficient as unsigned ints (packed)
+		unsigned int touchData;		  
+		unsigned int lastTouchData;	  
+		bool getLastTouchData(unsigned char electrode);			
 		
 	public:
 		MPR121_t();
