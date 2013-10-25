@@ -7,7 +7,7 @@
 // idea behind this is to create a settings structure that we can use to store all the
 // setup variables for a particular setup - comes pre-instantiated with defaults and
 // can be easily tweaked - we pass by reference (as a pointer) to save RAM
-struct MPR121_settings
+struct MPR121_settings_t
 {
 	// touch and release thresholds
 	unsigned char TTHRESH;
@@ -67,7 +67,7 @@ struct MPR121_settings
 	unsigned char TL; 
 	
 	// default values in initialisation list
-	MPR121_settings():
+	MPR121_settings_t():
 		TTHRESH(40),
 		RTHRESH(20),
 		INTERRUPT(4), 	// note that this is not a hardware interrupt, just the digital
@@ -141,7 +141,7 @@ class MPR121_t
 {
 	private:
 		unsigned char address;
-		MPR121_settings defaultSettings;
+		MPR121_settings_t defaultSettings;
 		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
 								  // when recovering from stop mode
 		bool running;
@@ -165,7 +165,7 @@ class MPR121_t
 		void run();
 		void stop();
 		bool reset();
-		void applySettings(MPR121_settings *settings);
+		void applySettings(MPR121_settings_t *settings);
 		
 		mpr121_error_t getError();
 		

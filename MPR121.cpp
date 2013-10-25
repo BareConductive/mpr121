@@ -110,7 +110,7 @@ bool MPR121_t::reset(){
 	}	
 }
 
-void MPR121_t::applySettings(MPR121_settings *settings){
+void MPR121_t::applySettings(MPR121_settings_t *settings){
 	bool wasRunning = running;
 	if(wasRunning) stop();  // can't change most regs when running - checking here avoids
 							// multiple stop() / run() calls
