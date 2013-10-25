@@ -190,6 +190,17 @@ bool MPR121_t::getTouchData(unsigned char electrode){
 	return((touchData>>electrode)&1);
 }
 
+unsigned char MPR121_t::getNumTouches(){
+	if(!inited) return(0xFF);
+	
+	unsigned char scratch = 0;
+	for(unsigned char i=0; i<13; i++){
+		if(getTouchData(i)) scratch++;
+	}
+	
+	return(scratch);
+}
+
 bool MPR121_t::getLastTouchData(unsigned char electrode){
 	if(electrode>12 || !inited) return false; // avoid out of bounds behaviour
 

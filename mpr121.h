@@ -178,6 +178,7 @@ class MPR121_t
 		void updateAll();
 		
 		bool getTouchData(unsigned char electrode);	
+		unsigned char getNumTouches();
 		int getFilteredData(unsigned char electrode);
 		int getBaselineData(unsigned char electrode);
 		bool isNewTouch(unsigned char electrode);
