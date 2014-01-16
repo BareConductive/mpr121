@@ -42,7 +42,7 @@ Still to be implemented:
 
 Typical use example:
 
-```
+```arduino
 #define MPR121addr 0x5A
 
 #include <Wire.h>
@@ -56,7 +56,6 @@ void setup(){
 void loop(){
 	// your code goes here
 }
-
 ```
 
 
