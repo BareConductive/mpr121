@@ -1,12 +1,39 @@
+/*******************************************************************************
+
+ Bare Conductive MPR121 library
+ ------------------------------
+ 
+ MPR121.h - MPR121 class header file
+ 
+ Based on code by Jim Lindblom and plenty of inspiration from the Freescale 
+ Semiconductor datasheets and application notes.
+ 
+ Bare Conductive code written by Stefan Dzisiewski-Smith and Peter Krige.
+ 
+ This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 
+ Unported License (CC BY-SA 3.0) http://creativecommons.org/licenses/by-sa/3.0/
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+
+*******************************************************************************/
+
 #ifndef MPR121_H
 #define MPR121_H
 
 #include "MPR121_defs.h"
 #include <Wire.h>
 
-// idea behind this is to create a settings structure that we can use to store all the
-// setup variables for a particular setup - comes pre-instantiated with defaults and
-// can be easily tweaked - we pass by reference (as a pointer) to save RAM
+// idea behind this is to create a settings structure that we can use to store 
+// all the setup variables for a particular setup - comes pre-instantiated with 
+// defaults and can be easily tweaked - we pass by reference (as a pointer) to 
+// save RAM
+
 struct MPR121_settings_t
 {
 	// touch and release thresholds
@@ -110,10 +137,10 @@ enum mpr121_pinf_t
 {
 	// INPUT and OUTPUT are already defined by Arduino, use its definitions
 	
-	//INPUT,			// digital input
+	//INPUT,		// digital input
 	INPUT_PU,		// digital input with pullup
 	INPUT_PD,		// digital input with pulldown
-	//OUTPUT,			// digital output (push-pull)
+	//OUTPUT,		// digital output (push-pull)
 	OUTPUT_HS,		// digital output, open collector (high side)
 	OUTPUT_LS		// digital output, open collector (low side)
 };
@@ -130,7 +157,7 @@ enum mpr121_error_t
 {
 	NO_ERROR,
 	RETURN_TO_SENDER,
-	ADDRESS_UNKNOWN,
+	ADDRESS_UNKNOWN,  // not implemented
 	READBACK_FAIL,
 	OVERCURRENT_FLAG,
 	OUT_OF_RANGE,
@@ -207,4 +234,4 @@ class MPR121_t
 
 extern MPR121_t MPR121;
 
-#endif
+#endif // MPR121_H

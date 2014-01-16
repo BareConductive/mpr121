@@ -1,11 +1,27 @@
-/*
-    MPR121_defs.h
-	April 8, 2010
-	by: Jim Lindblom
+/*******************************************************************************
 
-    updated June 22, 2012
-    by: Stefan Dzisiewski-Smith
-*/
+ Bare Conductive MPR121 library
+ ------------------------------
+ 
+ MPR121_defs.h - MPR121 register definitions
+ 
+ Based on code by Jim Lindblom and plenty of inspiration from the Freescale 
+ Semiconductor datasheets and application notes.
+ 
+ Bare Conductive code written by Stefan Dzisiewski-Smith and Peter Krige.
+ 
+ This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 
+ Unported License (CC BY-SA 3.0) http://creativecommons.org/licenses/by-sa/3.0/
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+
+*******************************************************************************/
 
 #ifndef MPR121_DEFS_H
 #define MPR121_DEFS_H
@@ -183,4 +199,4 @@ static unsigned char const PWM1 = 0x82;
 static unsigned char const PWM2 = 0x83;
 static unsigned char const PWM3 = 0x84;
 
-#endif
+#endif // MPR121_DEFS_H
