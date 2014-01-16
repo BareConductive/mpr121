@@ -66,7 +66,7 @@ void setup()
   }
   
   // interrupt 4 is pin 7 on the Arduino Leonardo or Bare Touch Board
-  MPR121.setInterruptPin(4);
+  MPR121.setInterruptPin(7);
   // initial data update
   MPR121.updateTouchData();
 }

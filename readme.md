@@ -1,4 +1,4 @@
-![Bare Conductive](http://www.bareconductive.com/content/themes/bareconductive/images/bare-conductive-logo.png)
+[![Bare Conductive](http://www.bareconductive.com/content/themes/bareconductive/images/bare-conductive-logo.png)](http://www.bareconductive.com/)
 
 # Bare Conductive MPR121 Arduino Library
 
@@ -26,10 +26,40 @@ Library includes support for:
 Still to be implemented:
 
 * full support for autocalibration / autoconfig
+* callback attachment for interrupt pin
 
 ## Install
 
 * Arduino's instructions for installing libraries are available [here](http://arduino.cc/en/Guide/Libraries)
+
+## Requirements
+
+* requires Wire.h library, which is part of the Arduino core (so you don't need to download anything) but you do need to include it in your .ino file
+* it is the user's responsibility to include <wire.h> and  call its begin() method
+* before you use any of the MPR121 methods, you need to call its MPR121.begin() method, normally in setup()
+* the default MPR121 I2C address for this library is 0x5C, which is used if you call MPR121.begin()
+* if you want to specify a different address you can, with MPR121.begin(yourAddress)
+
+Typical use example:
+
+```
+#define MPR121addr 0x5A
+
+#include <Wire.h>
+
+void setup(){
+	Wire.begin();
+	MPR121.begin(MPR121addr);
+}
+
+void loop(){
+	// your code goes here
+}
+
+```
+
+
+
 
 ## Examples
 
