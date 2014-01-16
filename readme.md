@@ -46,6 +46,7 @@ Typical use example:
 #define MPR121addr 0x5A
 
 #include <Wire.h>
+#include <MPR121.h>
 
 void setup(){
 	Wire.begin();
