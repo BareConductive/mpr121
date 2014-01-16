@@ -3,7 +3,7 @@
  Bare Conductive MPR121 library
  ------------------------------
  
- SimpleTouch.ino - simple MPR121 touch detection demo with serial output
+ LEDfade.ino - simple MPR121 PWM LED fader
  
  Based on code by Jim Lindblom and plenty of inspiration from the Freescale 
  Semiconductor datasheets and application notes.
@@ -23,13 +23,11 @@
 
 *******************************************************************************/
 
+
 #include <MPR121.h>
 #include <Wire.h>
 
-#define numElectrodes 12
-
-void setup()
-{
+void setup(){
   Serial.begin(9600);
   while(!Serial);  // only needed with Arduino Leonardo or Bare Touch Board
                    // or can be commented out if you want the demo to work
@@ -66,26 +64,45 @@ void setup()
     while(1);
   }
   
-  // interrupt 4 is pin 7 on the Arduino Leonardo or Bare Touch Board
-  MPR121.setInterruptPin(4);
-  // initial data update
-  MPR121.updateTouchData();
+  // The MPR121 allows a mixture of GPIO and touch sense electrodes to be
+  // selected for the 12 pins labelled E0..E11, but you can't just pick and
+  // choose arbitrarily. The first four electrodes (E0..E3) are always touch
+  // sense pins - they can't be anything else. Then you can set the number of
+  // GPIO pins from 0 to 8 for the remaining pins. These are set sequentially
+  // i.e. if 1 pin is required, this is ALWAYS E11, if 2 pins, E11 and E10
+  // and so on up to 8 pins (E11..E4). 
+  
+  // See p16 of http://www.freescale.com/files/sensors/doc/data_sheet/MPR121.pdf
+  // for more details.
+  
+  MPR121.setNumDigPins(1);
+  
+  // Note that you must also set the pin mode explicitly. This is because each
+  // electrode has 7 pin modes (6 GPIO and 1 touch), so the library is unable
+  // to correctly guess on your behalf. 
+  
+  // See p3 of http://cache.freescale.com/files/sensors/doc/app_note/AN3894.pdf 
+  // for more details
+  
+  MPR121.pinMode(11, OUTPUT);
 }
 
-void loop()
-{
-  if(MPR121.touchStatusChanged()){
-    MPR121.updateTouchData();
-    for(int i=0; i<numElectrodes; i++){
-      if(MPR121.isNewTouch(i)){
-        Serial.print("electrode ");
-        Serial.print(i, DEC);
-        Serial.println(" was just touched");  
-      } else if(MPR121.isNewRelease(i)){
-        Serial.print("electrode ");
-        Serial.print(i, DEC);
-        Serial.println(" was just released");  
-      }
-    } 
+void loop(){                                                                           
+
+  int i;
+  
+  // Note that ELE9 and ELE10 have a PWM bug - you should avoid using them
+  
+  // See https://community.freescale.com/thread/305474 for more details
+  
+  for(i=0; i<256; i++){
+    MPR121.analogWrite(11, i);
+    delay(10);
   }
+
+  for(i=255; i>=0; i--){
+    MPR121.analogWrite(11, i);
+    delay(10);
+  }
+
 }

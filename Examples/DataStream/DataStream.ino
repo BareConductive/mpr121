@@ -3,7 +3,7 @@
  Bare Conductive MPR121 library
  ------------------------------
  
- SimpleTouch.ino - simple MPR121 touch detection demo with serial output
+ DataStream.ino - prints capacitive sense data from MPR121 to serial port
  
  Based on code by Jim Lindblom and plenty of inspiration from the Freescale 
  Semiconductor datasheets and application notes.
@@ -23,20 +23,16 @@
 
 *******************************************************************************/
 
+// serial rate
+#define baudRate 57600
+
 #include <MPR121.h>
 #include <Wire.h>
 
-#define numElectrodes 12
+void setup(){  
+  Serial.begin(baudRate);
+  while(!Serial); // only needed for Arduino Leonardo or Bare Touch Board 
 
-void setup()
-{
-  Serial.begin(9600);
-  while(!Serial);  // only needed with Arduino Leonardo or Bare Touch Board
-                   // or can be commented out if you want the demo to work
-                   // without being connected to the Serial monitor
-
-  Wire.begin();
-  
   // 0x5C is the MPR121 I2C address on the Bare Touch Board
   if(!MPR121.begin(0x5C)){ 
     Serial.println("error setting up MPR121");  
@@ -65,27 +61,62 @@ void setup()
     }
     while(1);
   }
-  
-  // interrupt 4 is pin 7 on the Arduino Leonardo or Bare Touch Board
-  MPR121.setInterruptPin(4);
-  // initial data update
-  MPR121.updateTouchData();
 }
 
-void loop()
-{
-  if(MPR121.touchStatusChanged()){
-    MPR121.updateTouchData();
-    for(int i=0; i<numElectrodes; i++){
-      if(MPR121.isNewTouch(i)){
-        Serial.print("electrode ");
-        Serial.print(i, DEC);
-        Serial.println(" was just touched");  
-      } else if(MPR121.isNewRelease(i)){
-        Serial.print("electrode ");
-        Serial.print(i, DEC);
-        Serial.println(" was just released");  
-      }
+void loop(){
+   readRawInputs();  
+}
+
+void readRawInputs(){
+    int i;
+    
+    MPR121.updateAll();
+    
+    
+    Serial.print("TOUCH: ");
+    for(i=0; i<13; i++){          // 13 touch values
+      Serial.print(MPR121.getTouchData(i), DEC);
+      if(i<12) Serial.print(" ");
+    }    
+    Serial.println();   
+    
+    Serial.print("TTHS: ");
+    for(i=0; i<13; i++){          // 13 touch thresholds
+      Serial.print(MPR121.getTouchThreshold(i), DEC); 
+      if(i<12) Serial.print(" ");
+    }   
+    Serial.println();
+    
+    Serial.print("RTHS: ");
+    for(i=0; i<13; i++){          // 13 release thresholds
+      Serial.print(MPR121.getReleaseThreshold(i), DEC); 
+      if(i<12) Serial.print(" ");
+    }   
+    Serial.println();
+    
+    Serial.print("FDAT: ");
+    for(i=0; i<13; i++){          // 13 filtered values
+      Serial.print(MPR121.getFilteredData(i), DEC);
+      if(i<12) Serial.print(" ");
     } 
-  }
+    Serial.println();
+    
+    Serial.print("BVAL: ");
+    for(i=0; i<13; i++){          // 13 baseline values
+      Serial.print(MPR121.getBaselineData(i), DEC);
+      if(i<12) Serial.print(" ");
+    } 
+    Serial.println();
+    
+    // the trigger and threshold values refer to the difference between
+    // the filtered data and the running baseline - see p13 of 
+    // http://www.freescale.com/files/sensors/doc/data_sheet/MPR121.pdf
+    
+    Serial.print("DIFF: ");
+    for(i=0; i<13; i++){          // 13 value pairs
+      Serial.print(MPR121.getBaselineData(i)-MPR121.getFilteredData(i), DEC);
+      if(i<12) Serial.print(" ");
+    }           
+    Serial.println();
+
 }
