@@ -23,15 +23,16 @@
 
 *******************************************************************************/
 
+// Requires an LED with a series current limiting resistor connected between
+// E11 and ground. 470 ohms is good for most LEDs.
 
 #include <MPR121.h>
 #include <Wire.h>
 
 void setup(){
   Serial.begin(9600);
-  while(!Serial);  // only needed with Arduino Leonardo or Bare Touch Board
-                   // or can be commented out if you want the demo to work
-                   // without being connected to the Serial monitor
+  //while(!Serial);  // only needed if you want serial feedback with the
+  		     // Arduino Leonardo or Bare Touch Board
 
   Wire.begin();
   
@@ -78,8 +79,11 @@ void setup(){
   MPR121.setNumDigPins(1);
   
   // Note that you must also set the pin mode explicitly. This is because each
-  // electrode has 7 pin modes (6 GPIO and 1 touch), so the library is unable
-  // to correctly guess on your behalf. 
+  // electrode has 7 possible pin modes (6 GPIO and 1 touch), so the library is 
+  // unable to correctly guess on your behalf. These modes are INPUT, INPUT_PU 
+  // (input with internal pullup), INPUT_PD (input with internal pulldown), 
+  // OUTPUT, OUTPUT_HS (open collector output, high-side), OUTPUT_LS (open 
+  // collector output, low side).
   
   // See p3 of http://cache.freescale.com/files/sensors/doc/app_note/AN3894.pdf 
   // for more details
