@@ -42,7 +42,7 @@ Still to be implemented:
 
 Typical use example:
 
-```arduino
+```
 #define MPR121addr 0x5A
 
 #include <Wire.h>
