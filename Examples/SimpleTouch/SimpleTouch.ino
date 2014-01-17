@@ -65,8 +65,8 @@ void setup()
     while(1);
   }
   
-  // interrupt 4 is pin 7 on the Arduino Leonardo or Bare Touch Board
-  MPR121.setInterruptPin(7);
+  // pin 4 is the MPR121 interrupt on the Bare Touch Board
+  MPR121.setInterruptPin(4);
   // initial data update
   MPR121.updateTouchData();
 }
