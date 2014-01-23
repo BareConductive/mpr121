@@ -63,7 +63,8 @@ void loop(){
 
 ## Examples
 
-* [SimpleTouch.ino](./Examples/SimpleTouch/SimpleTouch.ino) - simple capacitive touch sense sketch with output via serial
-* [DataStream.ino](./Examples/DataStream/DataStream.ino) - serial data stream of capacitance data from MPR121
-* [GPIOinverter.ino](./Examples/GPIOinverter/GPIOinverter.ino) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
-* [LEDfade.ino](./Examples/LEDfade/LEDfade.ino) - simple MPR121 LED fader
+* [SimpleTouch](./Examples/SimpleTouch/) - simple capacitive touch sense sketch with output via serial
+* [DataStream](./Examples/DataStream/) - serial data stream of capacitance data from MPR121
+* [GPIOinverter](./Examples/GPIOinverter/) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
+* [LEDfade](./Examples/LEDfade/) - simple MPR121 LED fader
+* ##### todo: add an example for proximity mode
