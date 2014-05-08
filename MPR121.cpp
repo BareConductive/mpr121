@@ -235,8 +235,8 @@ bool MPR121_t::getLastTouchData(unsigned char electrode){
 	return((lastTouchData>>electrode)&1);
 }
 
-void MPR121_t::updateFilteredData(){
-	if(!inited) return;
+bool MPR121_t::updateFilteredData(){
+	if(!inited) return(false);
 	unsigned char LSB, MSB;
 
     Wire.beginTransmission(address); 
@@ -249,12 +249,12 @@ void MPR121_t::updateFilteredData(){
 		  LSB = Wire.read();
 		  MSB = Wire.read();
 		  filteredData[i] = ((MSB << 8) | LSB);
-		}     
+		} 
+		return(true);    
     } else {
-		for(int i=0; i<13; i++){         
-		  filteredData[i] = 0xFFFF; // this is an invalid filtered value 		
-		  							// indicating an error
-		}        
+    	// if we don't get back all 26 values we requested, don't update the FDAT values
+    	// and return false
+		return(false);     
     }
 }
 
@@ -264,8 +264,8 @@ int MPR121_t::getFilteredData(unsigned char electrode){
 	return(filteredData[electrode]);
 }
 
-void MPR121_t::updateBaselineData(){
-	if(!inited) return;
+bool MPR121_t::updateBaselineData(){
+	if(!inited) return(false);
 
     Wire.beginTransmission(address); 
     Wire.write(E0BV); 	// set address register to read from the start of the 
@@ -275,11 +275,13 @@ void MPR121_t::updateBaselineData(){
     if(Wire.requestFrom(address,(unsigned char)13)==13){
 		for(int i=0; i<13; i++){ // 13 filtered values
 		  baselineData[i] = Wire.read()<<2;
-		}     
+		}    
+		return(true); 
     } else {
 		for(int i=0; i<13; i++){         
-		  baselineData[i] = 0xFFFF; // this is an invalid filtered value, 
-		  							// indicating an error
+    	// if we don't get back all 26 values we requested, don't update the FDAT values
+    	// and return false
+		return(false); 
 		}        
     }
 }

@@ -200,8 +200,8 @@ class MPR121_t
 		bool isInited();
 		
 		void updateTouchData();
-		void updateBaselineData();
-		void updateFilteredData();
+		bool updateBaselineData();
+		bool updateFilteredData();
 		void updateAll();
 		
 		bool getTouchData(unsigned char electrode);	
