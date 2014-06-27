@@ -28,10 +28,6 @@ Still to be implemented:
 * full support for autocalibration / autoconfig
 * callback attachment for interrupt pin
 
-## Install
-
-* Arduino's instructions for installing libraries are available [here](http://arduino.cc/en/Guide/Libraries)
-
 ## Requirements
 
 * requires Wire.h library, which is part of the Arduino core (so you don't need to download anything) but you do need to include it in your .ino file
@@ -58,7 +54,9 @@ void loop(){
 }
 ```
 
+## Install
 
+* Arduino's instructions for installing libraries are available [here](http://arduino.cc/en/Guide/Libraries)
 
 
 ## Examples
