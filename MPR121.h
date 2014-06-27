@@ -156,8 +156,8 @@ enum mpr121_proxmode_t
 enum mpr121_error_t
 {
 	NO_ERROR,
-	RETURN_TO_SENDER,
-	ADDRESS_UNKNOWN,  // not implemented
+	RETURN_TO_SENDER, // not implemented
+	ADDRESS_UNKNOWN,  
 	READBACK_FAIL,
 	OVERCURRENT_FLAG,
 	OUT_OF_RANGE,
@@ -171,10 +171,9 @@ class MPR121_t
 		MPR121_settings_t defaultSettings;
 		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
 								  // when recovering from stop mode
+		unsigned char error;
 		bool running;
-		bool inited;
 		int interruptPin;
-		mpr121_error_t error;
 		
 		int filteredData[13];
 		int baselineData[13];
@@ -195,6 +194,7 @@ class MPR121_t
 		void applySettings(MPR121_settings_t *settings);
 		
 		mpr121_error_t getError();
+		void clearError();
 		
 		bool isRunning();
 		bool isInited();

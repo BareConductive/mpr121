@@ -1,4 +1,4 @@
-[![Bare Conductive](http://www.bareconductive.com/content/themes/bareconductive/images/bare-conductive-logo.png)](http://www.bareconductive.com/)
+<a href="http://www.bareconductive.com/"><img src="https://www.dropbox.com/s/5c4yatkrnqqbgrm/BareConductive.LOGO_553x221.jpg?dl=1" width="200px" alt="Bare Conductive" /></a>
 
 # Bare Conductive MPR121 Arduino Library
 
@@ -67,4 +67,6 @@ void loop(){
 * [DataStream](./Examples/DataStream/) - serial data stream of capacitance data from MPR121
 * [GPIOinverter](./Examples/GPIOinverter/) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
 * [LEDfade](./Examples/LEDfade/) - simple MPR121 LED fader
-* ##### todo: add an example for proximity mode
+
+## To do 
+* add an example for proximity sensing
