@@ -6,6 +6,6 @@ Continuously reads capacitive sense data from the MPR121 on the [Bare Conductive
 
 ## Requirements
 
-* [Bare Conductive MPR121 library](../../)
+* [Bare Conductive MPR121 library](https://github.com/BareConductive/mpr121/)
  
 

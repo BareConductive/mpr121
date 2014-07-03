@@ -8,4 +8,4 @@ Uses the (limited) PWM output feature of the MPR121 on the [Bare Conductive Touc
 
 ## Requirements
 
-* [Bare Conductive MPR121 library](../../)
+* [Bare Conductive MPR121 library](https://github.com/BareConductive/mpr121/)

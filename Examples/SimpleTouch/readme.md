@@ -8,4 +8,4 @@ Detects touch events on the [Bare Conductive Touch Board](http://www.bareconduct
 
 ## Requirements
 
-* [Bare Conductive MPR121 library](../../)
+* [Bare Conductive MPR121 library](https://github.com/BareConductive/mpr121/)
