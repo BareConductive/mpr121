@@ -10,4 +10,4 @@ Needs an LED with a series current limiting resistor connected between E11 and g
 
 ## Requirements
 
-* [Bare Conductive MPR121 library](../)
+* [Bare Conductive MPR121 library](../../)
