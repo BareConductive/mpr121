@@ -1,0 +1,99 @@
+# ******************************************************************************
+#
+# Bare Conductive MPR121 library
+# ------------------------------
+# 
+# keywords.txt - keyword highlighting definitions for Arduino IDE
+# 
+# Based on code by Jim Lindblom and plenty of inspiration from the Freescale 
+# Semiconductor datasheets and application notes.
+# 
+# Bare Conductive code written by Stefan Dzisiewski-Smith and Peter Krige.
+# 
+# This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 
+# Unported License (CC BY-SA 3.0) http://creativecommons.org/licenses/by-sa/3.0/
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+#
+# ******************************************************************************
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+MPR121_t	KEYWORD1
+MPR121_settings_t	KEYWORD1
+mpr121_pinf_t	KEYWORD1
+mpr121_error_t	KEYWORD1
+mpr121_proxmode_t	KEYWORD1
+mpr121_error_t	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+setRegister	KEYWORD2
+getRegister	KEYWORD2
+begin	KEYWORD2
+run	KEYWORD2
+stop	KEYWORD2
+reset	KEYWORD2
+applySettings	KEYWORD2
+getError	KEYWORD2
+isRunning	KEYWORD2
+isInited	KEYWORD2
+updateTouchData	KEYWORD2
+updateBaselineData	KEYWORD2
+updateFilteredData	KEYWORD2
+updateAll	KEYWORD2
+getTouchData	KEYWORD2
+getNumTouches	KEYWORD2
+getFilteredData	KEYWORD2
+getBaselineData	KEYWORD2
+isNewTouch	KEYWORD2
+isNewRelease	KEYWORD2
+setTouchThreshold	KEYWORD2
+setReleaseThreshold	KEYWORD2
+getTouchThreshold	KEYWORD2
+getReleaseThreshold	KEYWORD2
+setInterruptPin	KEYWORD2
+touchStatusChanged	KEYWORD2
+setProxMode	KEYWORD2
+setNumDigPins	KEYWORD2
+pinMode	KEYWORD2
+digitalWrite	KEYWORD2
+digitalToggle	KEYWORD2
+digitalRead	KEYWORD2
+analogWrite	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+INPUT	LITERAL1
+INPUT_PU	LITERAL1
+INPUT_PD	LITERAL1
+OUTPUT	LITERAL1
+OUTPUT_HS	LITERAL1
+OUTPUT_LS	LITERAL1
+DISABLED	LITERAL1
+PROX0_1	LITERAL1
+PROX0_3	LITERAL1
+PROX0_11	LITERAL1
+NO_ERROR	LITERAL1
+RETURN_TO_SENDER	LITERAL1
+ADDRESS_UNKNOWN	LITERAL1
+READBACK_FAIL	LITERAL1
+OVERCURRENT_FLAG	LITERAL1
+OUT_OF_RANGE	LITERAL1
+NOT_INITED	LITERAL1	
+SOUR_EGG	LITERAL1				
+
+#######################################
+# Instances (KEYWORD3)
+#######################################
+MPR121	KEYWORD3
