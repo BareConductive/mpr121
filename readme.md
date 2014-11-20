@@ -66,5 +66,38 @@ void loop(){
 * [GPIOinverter](./MPR121/Examples/GPIOinverter/) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
 * [LEDfade](./MPR121/Examples/LEDfade/) - simple MPR121 LED fader
 
-## To do 
-* add an example for proximity sensing
+## Touch Board Quick Start Guide
+
+The Touch Board is a easy-to-use platform for a huge range of interactive projects. Use the Touch Board to change the world around you by turning almost any material or surface into a sensor
+
+## Getting Started with the Touch Board
+
+The Touch Board comes pre-installed with a program and audio files on the micro SD card so it works out the box. Before we get ahead of our selves lets run through the following first.
+
+1.	Open: Pop open the box and remove the Touch Board from its packaging
+2.	Power: Give juice to the Touch Board! Use a LiPo battery or a micro USB cable.
+3. 	ON: Switch the board on using the switch in the bottom left hand corner!
+4. 	Audio: Plug in a pair of headphones or a powered speaker into the audio jack.
+5.	Electrodes: Put the headphones on and listen to the audio guide by touching each electrode in turn. 
+6.	Tracks: Change the audio tracks on the micro SD card by creating your own MP3 files on your computer and numbering them Track000.mp3 to Track011.mp3
+7.	Change: Replace the tracks on the SD card from the audio guide with your newly create tracks
+8. 	Click: Slot the micro SD card back into the Touch Board making sure you hear it click into place.
+9. 	Reset: Hit the reset button to recalibrate the electrodes and reboot the program.
+10.	Play: Have fun painting sensor to the Touch Board and triggering your audio tracks!
+
+For more detailed information on getting up and running with your Touch Board check out the [Getting Starter with the Touch Board](http://www.bareconductive.com/make/introducing-the-touch-board/) tutorial.
+
+## Setting up your Touch Board with Arduino 
+
+1.	Go to www.arduino.cc and download the latest BETA version of the Arduino IDE
+2.	Follow the instructions for installing Arduino on your operating system
+3.	Download the Bare Conductive Hardware plugin from gitHub here and place in it the your hardware holder
+4. 	Install the MPR121 and VS1053 libraries into your Libraries folder in Arduino.
+5. 	Download Touch_MP3 and place it in your Arduino folder.
+6.	Re-open Arduino and plug your Touch Board into your computer.
+7.	Open the Touch_MP3 sketch in Arduino
+8. 	Switch the board on and select ‘Bare Conductive Touch Board’ from the tools>>board drop down
+9.	Select the correct port in tools>>port, choose the one with TTY in the name.
+10.	Upload the code and your ready to roll!
+
+For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
