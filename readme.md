@@ -1,5 +1,4 @@
-[![Bare Conductive](https://www.dropbox.com/s/ltnp128s2ueq040/LOGO_249x99.png?dl=1)](http://www.bareconductive.com/)
-
+[![Bare Conductive](https://www.dropbox.com/s/p0p71yid2t8tenp/LOGO_256x106.png?dl=1)](http://www.bareconductive.com/)
 
 # Bare Conductive MPR121 Arduino Library
 
@@ -68,8 +67,14 @@ void loop(){
 * [LEDfade](./MPR121/Examples/LEDfade/) - simple MPR121 LED fader
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
+## To do 
+* add an example for proximity sensing
+=======
+>>>>>>> master
+=======
 ## To do 
 * add an example for proximity sensing
 =======
@@ -109,7 +114,12 @@ For more detailed information on getting up and running with your Touch Board ch
 10.	Upload the code and your ready to roll!
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
+=======
+For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
+>>>>>>> public
+>>>>>>> master
 =======
 For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
 >>>>>>> public
