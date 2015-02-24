@@ -1,4 +1,5 @@
-<a href="http://www.bareconductive.com/"><img src="https://www.dropbox.com/s/5c4yatkrnqqbgrm/BareConductive.LOGO_553x221.jpg?dl=1" width="200px" alt="Bare Conductive" /></a>
+[![Bare Conductive](https://www.dropbox.com/s/ltnp128s2ueq040/LOGO_249x99.png?dl=1)](http://www.bareconductive.com/)
+
 
 # Bare Conductive MPR121 Arduino Library
 
@@ -66,6 +67,13 @@ void loop(){
 * [GPIOinverter](./MPR121/Examples/GPIOinverter/) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
 * [LEDfade](./MPR121/Examples/LEDfade/) - simple MPR121 LED fader
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+## To do 
+* add an example for proximity sensing
+=======
+>>>>>>> master
 ## Touch Board Quick Start Guide
 
 The Touch Board is a easy-to-use platform for a huge range of interactive projects. Use the Touch Board to change the world around you by turning almost any material or surface into a sensor
@@ -100,4 +108,9 @@ For more detailed information on getting up and running with your Touch Board ch
 9.	Select the correct port in tools>>port, choose the one with TTY in the name.
 10.	Upload the code and your ready to roll!
 
+<<<<<<< HEAD
 For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
+=======
+For more detailed information on settng up Arduino for you Touch Board check out the [Setting up your Touch Board with Arduino](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial.
+>>>>>>> public
+>>>>>>> master
