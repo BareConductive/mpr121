@@ -2,7 +2,7 @@
 
 # Bare Conductive Touch Board Datastream Example
 
-Continuously reads capacitive sense data from the MPR121 on the [Bare Conductive Touch Board](http://www.bareconductive.com/touch-board) and outputs it to the (virtual) serial port. Can optionally interface with Bare Conductive's [MPR121 grapher](https://github.com/BareConductive/mpr121-grapher).
+Continuously reads capacitive sense data from the MPR121 on the [Bare Conductive Touch Board](http://www.bareconductive.com/touch-board) and outputs it to the (virtual) serial port. Can optionally interface with Bare Conductive's [MPR121 grapher](https://github.com/BareConductive/mpr121-grapher) or [Max/MSP communication patch](https://github.com/BareConductive/Max-MSP-Touch-Board-communication).
 
 ## Requirements
 
