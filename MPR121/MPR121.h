@@ -198,6 +198,13 @@ class MPR121_t
 		bool begin(unsigned char address);
 		bool begin();
 
+		// I2C speed control functions - goFast() sets the SCL clock
+		// to 400kHz - goSlow() sets the SCL clock to 100kHz. Defaults
+		// to 100kHz and affects all devices on the I2C bus. Included
+		// for speed freaks only.
+		void goSlow();
+		void goFast();
+
 		// getError() returns an mpr121_error_t indicating the current 
 		// error on the MPR121 - clearError() clears this
 		mpr121_error_t getError();
