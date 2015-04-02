@@ -124,6 +124,14 @@ bool MPR121_t::begin(unsigned char address){
 	return begin();
 }
 
+void MPR121_t::goSlow(){
+	TWBR = ((F_CPU / 100000L) - 16) / 2; // set I2C clock to 100kHz
+}
+
+void MPR121_t::goFast(){
+	TWBR = ((F_CPU / 400000L) - 16) / 2; // set I2C clock to 400kHz
+}
+
 void MPR121_t::run(){
 	if(!isInited()) return;
 	setRegister(ECR, ECR_backup); // restore backup to return to run mode

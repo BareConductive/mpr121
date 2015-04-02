@@ -40,6 +40,8 @@ mpr121_error_t	KEYWORD1
 setRegister	KEYWORD2
 getRegister	KEYWORD2
 begin	KEYWORD2
+goSlow	KEYWORD2
+goFast	KEYWORD2
 run	KEYWORD2
 stop	KEYWORD2
 reset	KEYWORD2
