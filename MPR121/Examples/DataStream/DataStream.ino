@@ -61,6 +61,14 @@ void setup(){
     }
     while(1);
   }
+
+  // this is the touch threshold - setting it low makes it more like a proximity trigger
+  // default value is 40 for touch
+  MPR121.setTouchThreshold(40);
+  
+  // this is the release threshold - must ALWAYS be smaller than the touch threshold
+  // default value is 20 for touch
+  MPR121.setReleaseThreshold(20);  
 }
 
 void loop(){
