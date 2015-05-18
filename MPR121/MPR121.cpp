@@ -290,11 +290,6 @@ bool MPR121_t::getLastTouchData(unsigned char electrode){
 bool MPR121_t::updateFilteredData(){
 	if(!isInited()) return(false);
 
-	if(touchStatusChanged()) {
-		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
-		autoTouchStatusFlag = true;
-	}
-
 	unsigned char LSB, MSB;
 
   Wire.beginTransmission(address); 
@@ -302,17 +297,27 @@ bool MPR121_t::updateFilteredData(){
   					//filtered data
   Wire.endTransmission(false); // repeated start
 
+  if(touchStatusChanged()) {
+		autoTouchStatusFlag = true;
+	}
+
   if(Wire.requestFrom(address,(unsigned char)26)==26){
-	for(int i=0; i<13; i++){ // 13 filtered values
-	  LSB = Wire.read();
-	  MSB = Wire.read();
-	  filteredData[i] = ((MSB << 8) | LSB);
-	} 
-	return(true);    
+		for(int i=0; i<13; i++){ // 13 filtered values
+			if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
+		  LSB = Wire.read();
+		  if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
+		  MSB = Wire.read();
+		  filteredData[i] = ((MSB << 8) | LSB);
+		} 
+		return(true);    
   } else {
   	// if we don't get back all 26 values we requested, don't update the FDAT values
   	// and return false
-	return(false);     
+		return(false);     
   }
 }
 
@@ -325,27 +330,27 @@ int MPR121_t::getFilteredData(unsigned char electrode){
 bool MPR121_t::updateBaselineData(){
 	if(!isInited()) return(false);
 
-	if(touchStatusChanged()) {
-		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
-		autoTouchStatusFlag = true;
-	}
-
   Wire.beginTransmission(address); 
   Wire.write(E0BV); 	// set address register to read from the start of the 
   					// baseline data
   Wire.endTransmission(false); // repeated start
 
+  if(touchStatusChanged()) {
+		autoTouchStatusFlag = true;
+	}
+
   if(Wire.requestFrom(address,(unsigned char)13)==13){
 		for(int i=0; i<13; i++){ // 13 filtered values
+	    if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
 		  baselineData[i] = Wire.read()<<2;
 		}    
 		return(true); 
-	  } else {
-		for(int i=0; i<13; i++){         
-	  	// if we don't get back all 26 values we requested, don't update the FDAT values
+	  } else {    
+	  	// if we don't get back all 26 values we requested, don't update the BVAL values
 	  	// and return false
-		return(false); 
-		}        
+		return(false);       
   }
 }
 
