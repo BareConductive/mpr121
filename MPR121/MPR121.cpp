@@ -45,8 +45,8 @@ MPR121_t::MPR121_t(){
 	running = false;
 	error = 1<<NOT_INITED_BIT; // initially, we're not initialised
 	touchData = 0;
-	lastTouchData = 0;	
-	autoTouchStatusFlag = false;
+	lastTouchData = 0;
+	autoTouchStatusFlag = false;	
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -174,7 +174,7 @@ bool MPR121_t::reset(){
 	}
 }
 
-void MPR121_t::applySettings(volatile MPR121_settings_t *settings){
+void MPR121_t::applySettings(MPR121_settings_t *settings){
 	bool wasRunning = running;
 	if(wasRunning) stop();  // can't change most regs when running - checking 
 							// here avoids multiple stop() / run() calls
@@ -430,12 +430,11 @@ void MPR121_t::setInterruptPin(unsigned char pin){
 	if(!isInited()) return;
 	::pinMode(pin, INPUT_PULLUP);
 	interruptPin = pin;		
-	
 }
 
 bool MPR121_t::touchStatusChanged(){
 	// :: here forces the compiler to use Arduino's digitalRead, not MPR121's
-	return((!::digitalRead(interruptPin)) || autoTouchStatusFlag);
+	return(autoTouchStatusFlag || (!::digitalRead(interruptPin)));
 }
 
 void MPR121_t::setProxMode(mpr121_proxmode_t mode){
