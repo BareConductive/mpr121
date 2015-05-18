@@ -46,6 +46,7 @@ MPR121_t::MPR121_t(){
 	error = 1<<NOT_INITED_BIT; // initially, we're not initialised
 	touchData = 0;
 	lastTouchData = 0;	
+	autoTouchStatusFlag = false;
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -256,6 +257,8 @@ bool MPR121_t::isInited(){
 
 void MPR121_t::updateTouchData(){
 	if(!isInited()) return;
+
+	autoTouchStatusFlag = false;
 	
 	lastTouchData = touchData;
 	touchData = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
@@ -289,6 +292,7 @@ bool MPR121_t::updateFilteredData(){
 
 	if(touchStatusChanged()) {
 		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
+		autoTouchStatusFlag = true;
 	}
 
 	unsigned char LSB, MSB;
@@ -323,6 +327,7 @@ bool MPR121_t::updateBaselineData(){
 
 	if(touchStatusChanged()) {
 		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
+		autoTouchStatusFlag = true;
 	}
 
   Wire.beginTransmission(address); 
@@ -430,7 +435,7 @@ void MPR121_t::setInterruptPin(unsigned char pin){
 
 bool MPR121_t::touchStatusChanged(){
 	// :: here forces the compiler to use Arduino's digitalRead, not MPR121's
-	return(!::digitalRead(interruptPin));
+	return((!::digitalRead(interruptPin)) || autoTouchStatusFlag);
 }
 
 void MPR121_t::setProxMode(mpr121_proxmode_t mode){

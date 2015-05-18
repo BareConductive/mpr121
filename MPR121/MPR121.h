@@ -182,6 +182,8 @@ class MPR121_t
 		volatile bool running;
 		volatile int interruptPin;
 		
+		volatile bool autoTouchStatusFlag;	// we use this to catch touch / release events that happen
+																				// during other update calls
 		volatile int filteredData[13];
 		volatile int baselineData[13];
 		volatile unsigned int touchData;		  
