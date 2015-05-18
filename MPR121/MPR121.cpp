@@ -173,7 +173,7 @@ bool MPR121_t::reset(){
 	}
 }
 
-void MPR121_t::applySettings(MPR121_settings_t *settings){
+void MPR121_t::applySettings(volatile MPR121_settings_t *settings){
 	bool wasRunning = running;
 	if(wasRunning) stop();  // can't change most regs when running - checking 
 							// here avoids multiple stop() / run() calls
@@ -286,25 +286,30 @@ bool MPR121_t::getLastTouchData(unsigned char electrode){
 
 bool MPR121_t::updateFilteredData(){
 	if(!isInited()) return(false);
+
+	if(touchStatusChanged()) {
+		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
+	}
+
 	unsigned char LSB, MSB;
 
-    Wire.beginTransmission(address); 
-    Wire.write(E0FDL); 	// set address register to read from the start of the 
-    					//filtered data
-    Wire.endTransmission(false); // repeated start
-  
-    if(Wire.requestFrom(address,(unsigned char)26)==26){
-		for(int i=0; i<13; i++){ // 13 filtered values
-		  LSB = Wire.read();
-		  MSB = Wire.read();
-		  filteredData[i] = ((MSB << 8) | LSB);
-		} 
-		return(true);    
-    } else {
-    	// if we don't get back all 26 values we requested, don't update the FDAT values
-    	// and return false
-		return(false);     
-    }
+  Wire.beginTransmission(address); 
+  Wire.write(E0FDL); 	// set address register to read from the start of the 
+  					//filtered data
+  Wire.endTransmission(false); // repeated start
+
+  if(Wire.requestFrom(address,(unsigned char)26)==26){
+	for(int i=0; i<13; i++){ // 13 filtered values
+	  LSB = Wire.read();
+	  MSB = Wire.read();
+	  filteredData[i] = ((MSB << 8) | LSB);
+	} 
+	return(true);    
+  } else {
+  	// if we don't get back all 26 values we requested, don't update the FDAT values
+  	// and return false
+	return(false);     
+  }
 }
 
 int MPR121_t::getFilteredData(unsigned char electrode){
@@ -316,23 +321,27 @@ int MPR121_t::getFilteredData(unsigned char electrode){
 bool MPR121_t::updateBaselineData(){
 	if(!isInited()) return(false);
 
-    Wire.beginTransmission(address); 
-    Wire.write(E0BV); 	// set address register to read from the start of the 
-    					// baseline data
-    Wire.endTransmission(false); // repeated start
-  
-    if(Wire.requestFrom(address,(unsigned char)13)==13){
+	if(touchStatusChanged()) {
+		updateTouchData(); // make sure we don't overwrite an interrupt accidentally - get touch data first
+	}
+
+  Wire.beginTransmission(address); 
+  Wire.write(E0BV); 	// set address register to read from the start of the 
+  					// baseline data
+  Wire.endTransmission(false); // repeated start
+
+  if(Wire.requestFrom(address,(unsigned char)13)==13){
 		for(int i=0; i<13; i++){ // 13 filtered values
 		  baselineData[i] = Wire.read()<<2;
 		}    
 		return(true); 
-    } else {
+	  } else {
 		for(int i=0; i<13; i++){         
-    	// if we don't get back all 26 values we requested, don't update the FDAT values
-    	// and return false
+	  	// if we don't get back all 26 values we requested, don't update the FDAT values
+	  	// and return false
 		return(false); 
 		}        
-    }
+  }
 }
 
 int MPR121_t::getBaselineData(unsigned char electrode){
@@ -402,11 +411,13 @@ void MPR121_t::setReleaseThreshold(unsigned char electrode, unsigned char val){
 
 unsigned char MPR121_t::getTouchThreshold(unsigned char electrode){
 	if(electrode>12 || !isInited()) return(0xFF); // avoid out of bounds behaviour
-	return(getRegister(E0TTH+(electrode<<1)));
+	return(getRegister(E0TTH+(electrode<<1))); // "255" issue is in here somewhere
+	//return(101);
 }
 unsigned char MPR121_t::getReleaseThreshold(unsigned char electrode){
 	if(electrode>12 || !isInited()) return(0xFF); // avoid out of bounds behaviour
-	return(getRegister(E0RTH+(electrode<<1)));
+	return(getRegister(E0RTH+(electrode<<1))); // "255" issue is in here somewhere
+	//return(51);
 }
 
 void MPR121_t::setInterruptPin(unsigned char pin){

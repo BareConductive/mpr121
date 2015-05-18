@@ -174,18 +174,18 @@ class MPR121_t
 	private:
 		// internal helper functions and variables
 		// not exposed externally to the user
-		unsigned char address;
-		MPR121_settings_t defaultSettings;
-		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
+		volatile unsigned char address;
+		volatile MPR121_settings_t defaultSettings;
+		volatile unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
 								  // when recovering from stop mode
-		unsigned char error;
-		bool running;
-		int interruptPin;
+		volatile unsigned char error;
+		volatile bool running;
+		volatile int interruptPin;
 		
-		int filteredData[13];
-		int baselineData[13];
-		unsigned int touchData;		  
-		unsigned int lastTouchData;	  
+		volatile int filteredData[13];
+		volatile int baselineData[13];
+		volatile unsigned int touchData;		  
+		volatile unsigned int lastTouchData;	  
 		bool getLastTouchData(unsigned char electrode);			
 		
 	public:
@@ -261,7 +261,7 @@ class MPR121_t
 		// applies a complete array of settings from an
 		// MPR121_settings_t variable passed as a pointer
 		// useful if you want to do a bulk setup of the device
-		void applySettings(MPR121_settings_t *settings);
+		void applySettings(volatile MPR121_settings_t *settings);
 
 		// setRegister() and getRegister() manipulate registers on
 		// the MPR121 directly, whilst correctly stopping and

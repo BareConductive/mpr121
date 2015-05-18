@@ -29,6 +29,13 @@
 #include <MPR121.h>
 #include <Wire.h>
 
+// this is the touch threshold - setting it low makes it more like a proximity trigger
+// default value is 40 for touch
+const int touchThreshold = 40;
+// this is the release threshold - must ALWAYS be smaller than the touch threshold
+// default value is 20 for touch
+const int releaseThreshold = 20;
+
 void setup(){  
   Serial.begin(baudRate);
   while(!Serial); // only needed for Arduino Leonardo or Bare Touch Board 
@@ -62,13 +69,9 @@ void setup(){
     while(1);
   }
 
-  // this is the touch threshold - setting it low makes it more like a proximity trigger
-  // default value is 40 for touch
-  MPR121.setTouchThreshold(40);
-  
-  // this is the release threshold - must ALWAYS be smaller than the touch threshold
-  // default value is 20 for touch
-  MPR121.setReleaseThreshold(20);  
+
+  MPR121.setTouchThreshold(touchThreshold);
+  MPR121.setReleaseThreshold(releaseThreshold);  
 }
 
 void loop(){
@@ -78,7 +81,9 @@ void loop(){
 void readRawInputs(){
     int i;
     
-    MPR121.updateAll();
+    if(MPR121.touchStatusChanged()) MPR121.updateTouchData();
+    MPR121.updateBaselineData();
+    MPR121.updateFilteredData();
     
     
     Serial.print("TOUCH: ");
@@ -90,14 +95,14 @@ void readRawInputs(){
     
     Serial.print("TTHS: ");
     for(i=0; i<13; i++){          // 13 touch thresholds
-      Serial.print(MPR121.getTouchThreshold(i), DEC); 
+      Serial.print(touchThreshold, DEC); 
       if(i<12) Serial.print(" ");
     }   
     Serial.println();
     
     Serial.print("RTHS: ");
     for(i=0; i<13; i++){          // 13 release thresholds
-      Serial.print(MPR121.getReleaseThreshold(i), DEC); 
+      Serial.print(releaseThreshold, DEC); 
       if(i<12) Serial.print(" ");
     }   
     Serial.println();
