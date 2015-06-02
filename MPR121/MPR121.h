@@ -170,24 +170,7 @@ enum mpr121_error_t
 };
 
 class MPR121_t
-{
-	private:
-		// internal helper functions and variables
-		// not exposed externally to the user
-		unsigned char address;
-		MPR121_settings_t defaultSettings;
-		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
-								  // when recovering from stop mode
-		unsigned char error;
-		bool running;
-		int interruptPin;
-		
-		int filteredData[13];
-		int baselineData[13];
-		unsigned int touchData;		  
-		unsigned int lastTouchData;	  
-		bool getLastTouchData(unsigned char electrode);			
-		
+{		
 	public:
 		MPR121_t();
 
@@ -284,6 +267,10 @@ class MPR121_t
 
 		// sets the pin that the MPR121 INT output is connected to on the 
 		// Arduino board - does not have to be a hardware interrupt pin
+		// if it is, however, an interrupt service routine will automatically
+		// set an internal flag when a touch event occurs - thus minimising
+		// lost events if you are also reading other data types (filtered data,
+		// baseline data)
 		void setInterruptPin(unsigned char pin);
 
 		// set number of electrodes to use to generate virtual "13th"
@@ -324,7 +311,28 @@ class MPR121_t
 		// internally reduced to 4 bit) and broken on ELE9 and ELE10
 		// see https://community.freescale.com/thread/305474
 		void analogWrite(unsigned char electrode, unsigned char val);
+
+	// functions / variables internal to the MPR121_t class - you cannot access these externally
+
+	private:
+		// internal helper functions and variables
+		// not exposed externally to the user
+		unsigned char address;
+		MPR121_settings_t defaultSettings;
+		unsigned char ECR_backup; // so we can re-enable the correct number of electrodes
+								  // when recovering from stop mode
+		unsigned char error;
+		bool running;
+		int interruptPin;
 		
+		int filteredData[13];
+		int baselineData[13];
+		unsigned int touchData;		  
+		unsigned int lastTouchData;	  
+		bool getLastTouchData(unsigned char electrode);	
+		bool autoTouchStatusFlag;	// we use this to catch touch / release events that happen
+																				// during other update calls	
+
 };
 
 extern MPR121_t MPR121;

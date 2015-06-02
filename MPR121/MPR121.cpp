@@ -45,7 +45,8 @@ MPR121_t::MPR121_t(){
 	running = false;
 	error = 1<<NOT_INITED_BIT; // initially, we're not initialised
 	touchData = 0;
-	lastTouchData = 0;	
+	lastTouchData = 0;
+	autoTouchStatusFlag = false;	
 }
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
@@ -256,6 +257,8 @@ bool MPR121_t::isInited(){
 
 void MPR121_t::updateTouchData(){
 	if(!isInited()) return;
+
+	autoTouchStatusFlag = false;
 	
 	lastTouchData = touchData;
 	touchData = (unsigned int)getRegister(TS1) + ((unsigned int)getRegister(TS2)<<8);
@@ -286,25 +289,36 @@ bool MPR121_t::getLastTouchData(unsigned char electrode){
 
 bool MPR121_t::updateFilteredData(){
 	if(!isInited()) return(false);
+
 	unsigned char LSB, MSB;
 
-    Wire.beginTransmission(address); 
-    Wire.write(E0FDL); 	// set address register to read from the start of the 
-    					//filtered data
-    Wire.endTransmission(false); // repeated start
-  
-    if(Wire.requestFrom(address,(unsigned char)26)==26){
+  Wire.beginTransmission(address); 
+  Wire.write(E0FDL); 	// set address register to read from the start of the 
+  					//filtered data
+  Wire.endTransmission(false); // repeated start
+
+  if(touchStatusChanged()) {
+		autoTouchStatusFlag = true;
+	}
+
+  if(Wire.requestFrom(address,(unsigned char)26)==26){
 		for(int i=0; i<13; i++){ // 13 filtered values
+			if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
 		  LSB = Wire.read();
+		  if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
 		  MSB = Wire.read();
 		  filteredData[i] = ((MSB << 8) | LSB);
 		} 
 		return(true);    
-    } else {
-    	// if we don't get back all 26 values we requested, don't update the FDAT values
-    	// and return false
+  } else {
+  	// if we don't get back all 26 values we requested, don't update the FDAT values
+  	// and return false
 		return(false);     
-    }
+  }
 }
 
 int MPR121_t::getFilteredData(unsigned char electrode){
@@ -316,23 +330,28 @@ int MPR121_t::getFilteredData(unsigned char electrode){
 bool MPR121_t::updateBaselineData(){
 	if(!isInited()) return(false);
 
-    Wire.beginTransmission(address); 
-    Wire.write(E0BV); 	// set address register to read from the start of the 
-    					// baseline data
-    Wire.endTransmission(false); // repeated start
-  
-    if(Wire.requestFrom(address,(unsigned char)13)==13){
+  Wire.beginTransmission(address); 
+  Wire.write(E0BV); 	// set address register to read from the start of the 
+  					// baseline data
+  Wire.endTransmission(false); // repeated start
+
+  if(touchStatusChanged()) {
+		autoTouchStatusFlag = true;
+	}
+
+  if(Wire.requestFrom(address,(unsigned char)13)==13){
 		for(int i=0; i<13; i++){ // 13 filtered values
+	    if(touchStatusChanged()) {
+				autoTouchStatusFlag = true;
+			}
 		  baselineData[i] = Wire.read()<<2;
 		}    
 		return(true); 
-    } else {
-		for(int i=0; i<13; i++){         
-    	// if we don't get back all 26 values we requested, don't update the FDAT values
-    	// and return false
-		return(false); 
-		}        
-    }
+	  } else {    
+	  	// if we don't get back all 26 values we requested, don't update the BVAL values
+	  	// and return false
+		return(false);       
+  }
 }
 
 int MPR121_t::getBaselineData(unsigned char electrode){
@@ -402,11 +421,13 @@ void MPR121_t::setReleaseThreshold(unsigned char electrode, unsigned char val){
 
 unsigned char MPR121_t::getTouchThreshold(unsigned char electrode){
 	if(electrode>12 || !isInited()) return(0xFF); // avoid out of bounds behaviour
-	return(getRegister(E0TTH+(electrode<<1)));
+	return(getRegister(E0TTH+(electrode<<1))); // "255" issue is in here somewhere
+	//return(101);
 }
 unsigned char MPR121_t::getReleaseThreshold(unsigned char electrode){
 	if(electrode>12 || !isInited()) return(0xFF); // avoid out of bounds behaviour
-	return(getRegister(E0RTH+(electrode<<1)));
+	return(getRegister(E0RTH+(electrode<<1))); // "255" issue is in here somewhere
+	//return(51);
 }
 
 void MPR121_t::setInterruptPin(unsigned char pin){
@@ -414,12 +435,11 @@ void MPR121_t::setInterruptPin(unsigned char pin){
 	if(!isInited()) return;
 	::pinMode(pin, INPUT_PULLUP);
 	interruptPin = pin;		
-	
 }
 
 bool MPR121_t::touchStatusChanged(){
 	// :: here forces the compiler to use Arduino's digitalRead, not MPR121's
-	return(!::digitalRead(interruptPin));
+	return(autoTouchStatusFlag || (!::digitalRead(interruptPin)));
 }
 
 void MPR121_t::setProxMode(mpr121_proxmode_t mode){
