@@ -99,16 +99,16 @@ struct MPR121_settings_t
 		RTHRESH(20),
 		INTERRUPT(4), 	// note that this is not a hardware interrupt, just the digital
 						// pin that the MPR121 ~INT pin is connected to
-		MHDR(0x3F),
-		NHDR(0x3F),
-		NCLR(0x05),
-		FDLR(0x00),
+		MHDR(0x01),
+		NHDR(0x01),
+		NCLR(0x10),
+		FDLR(0x01),
 		MHDF(0x01),
-		NHDF(0x3F),
+		NHDF(0x01),
 		NCLF(0x10),
-		FDLF(0x03),
+		FDLF(0x01),
 		NHDT(0x01),
-		NCLT(0x01),
+		NCLT(0x10),
 		FDLT(0xFF),
 		MHDPROXR(0x0F),
 		NHDPROXR(0x0F),
@@ -124,7 +124,7 @@ struct MPR121_settings_t
 		DTR(0x11),
 		AFE1(0xFF),
 		AFE2(0x38),
-		ECR(0x8C), // default to fast baseline startup and 12 electrodes enabled, no prox
+		ECR(0xCC), // default to fast baseline startup and 12 electrodes enabled, no prox
 		ACCR0(0x00),
 		ACCR1(0x00),
 		USL(0x00), 
