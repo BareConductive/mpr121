@@ -1,4 +1,4 @@
-[![Bare Conductive](https://www.dropbox.com/s/7qmvpvst3kal3qv/LOGO_256x106.png?dl=1)](http://www.bareconductive.com/)
+[![Bare Conductive](http://bareconductive.com/assets/images/LOGO_256x106.png)](http://www.bareconductive.com/)
 
 # Bare Conductive Touch Board Simple Touch Detection Example
 
@@ -8,11 +8,7 @@ Detects touch events on the [Bare Conductive Touch Board](http://www.bareconduct
 
 ## Requirements
 
-* [Arduino](http://arduino.cc/en/Main/Software) 1.0.5 or 1.5.6+ (1.5.6+ is strongly preferred).
-
-* Arduino's instructions for installing libraries are available [here](http://arduino.cc/en/Guide/Libraries)
-
-* [Bare Conductive MPR121 library](https://github.com/BareConductive/mpr121/)
+* You should make sure that you have followed our [Setting up Arduino with your Touch Board](http://www.bareconductive.com/make/setting-up-arduino-with-your-touch-board/) tutorial before using this (or any other) of our code examples
 
 ## Install
 
