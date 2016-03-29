@@ -126,11 +126,11 @@ bool MPR121_t::begin(unsigned char address){
 }
 
 void MPR121_t::goSlow(){
-	TWBR = ((F_CPU / 100000L) - 16) / 2; // set I2C clock to 100kHz
+	Wire.setClock(100000L); // set I2C clock to 100kHz
 }
 
 void MPR121_t::goFast(){
-	TWBR = ((F_CPU / 400000L) - 16) / 2; // set I2C clock to 400kHz
+    Wire.setClock(400000L); // set I2C clock to 400kHz
 }
 
 void MPR121_t::run(){
