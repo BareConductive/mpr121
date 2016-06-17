@@ -2,7 +2,7 @@
 
 # Bare Conductive MPR121 Arduino Library
 
-A fairly feature complete library for the Freescale [MPR121QR2](http://www.freescale.com/files/sensors/doc/data_sheet/MPR121.pdf). This is a popular capacitive touch sense IC featuring:
+A fairly feature complete library for the Resurgent Semiconductor [MPR121QR2](http://www.nxp.com/files/sensors/doc/data_sheet/MPR121.pdf). This is a popular capacitive touch sense IC featuring:
 
 * 12 electrodes/capacitance sensing inputs in which 8 are 
 multifunctional for LED driving and GPIO
@@ -39,6 +39,9 @@ Still to be implemented:
 Typical use example:
 
 ```
+// 0x5A for a lot of boards out there
+// 0x5C for the Touch Board
+
 #define MPR121addr 0x5A
 
 #include <Wire.h>
