@@ -35,5 +35,15 @@ This is normally installed as an example within the MPR121 library, but if you w
 
 	If this folder does not exist, create it first.
 1. Reopen the Arduino IDE - you should now be able to open the sketch in the **File -> Sketchbook** menu.
+
+## Output message formatting
+
+    TOUCH:		electrode touch values (0 not touched, 1 touched)
+    TTHS:		electrode touch thresholds (0..255)
+    RTHS:		electrode release thresholds (0..255)
+    FDAT:		electrode filtered data (0..1023)
+    BVAL:		electrode baseline values (0..1023)
+    DIFF:		/bval - /fdat (0..1023)
  
+
 
