@@ -196,14 +196,11 @@ enum mpr121_sample_interval_t
 class MPR121_t
 {		
 	public:
-		MPR121_t();
-
 		// -------------------- BASIC FUNCTIONS --------------------
 
 		// begin() must be called before using any other function
 		// address is optional, default is 0x5C
-		bool begin(unsigned char address);
-		bool begin();
+		bool begin(unsigned char address = 0x5C);
 
 		// I2C speed control functions - goFast() sets the SCL clock
 		// to 400kHz - goSlow() sets the SCL clock to 100kHz. Defaults
