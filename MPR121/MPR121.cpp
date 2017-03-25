@@ -43,21 +43,11 @@ extern "C" {
 #include "MPR121.h"
 #include <Arduino.h>
 
-#define NOT_INITED_BIT 0
+#define INITED_BIT 0
 #define ADDRESS_UNKNOWN_BIT 1
 #define READBACK_FAIL_BIT 2
 #define OVERCURRENT_FLAG_BIT 3
 #define OUT_OF_RANGE_BIT 4
-
-MPR121_t::MPR121_t(){
-	address = 0x5C;    // default address is 0x5C, for use with Bare Touch Board
-	ECR_backup = 0x00;
-	running = false;
-	error = 1<<NOT_INITED_BIT; // initially, we're not initialised
-	touchData = 0;
-	lastTouchData = 0;
-	autoTouchStatusFlag = false;	
-}
 
 void MPR121_t::setRegister(unsigned char reg, unsigned char value){
 
@@ -114,8 +104,20 @@ unsigned char MPR121_t::getRegister(unsigned char reg){
     return scratch;
 }
 
-bool MPR121_t::begin(){
-	error &= ~(1<<NOT_INITED_BIT); // clear NOT_INITED error flag
+bool MPR121_t::begin(unsigned char address){
+	address = 0x5C;    // default address is 0x5C, for use with Bare Touch Board
+
+	ECR_backup = 0x00;
+	running = false;
+	touchData = 0;
+	lastTouchData = 0;
+	autoTouchStatusFlag = false;
+
+	if(address>=0x5A && address<=0x5D) // addresses only valid 0x5A to 0x5D
+	{
+		this->address = address; // need to be specific here
+	}
+	error |= (1<<INITED_BIT); // set INITED non-error flag
 
 	if(reset()){
 		// default values...
@@ -124,15 +126,6 @@ bool MPR121_t::begin(){
 	} else {
 		return false;
 	}
-	
-}
-
-bool MPR121_t::begin(unsigned char address){
-	if(address>=0x5A && address<=0x5D) // addresses only valid 0x5A to 0x5D 
-	{
-		this->address = address; // need to be specific here
-	}
-	return begin();
 }
 
 void MPR121_t::goSlow(){
@@ -222,7 +215,7 @@ void MPR121_t::applySettings(MPR121_settings_t *settings){
 	
 	setRegister(MPR121_ECR, settings->ECR);	
 	
-	error &= ~(1<<NOT_INITED_BIT); // clear not inited error as we have just inited!
+	error |= (1<<INITED_BIT); // set inited non-error as we have just inited!
 	setTouchThreshold(settings->TTHRESH);
 	setReleaseThreshold(settings->RTHRESH);
 	setInterruptPin(settings->INTERRUPT);	
@@ -262,7 +255,7 @@ bool MPR121_t::isRunning(){
 }
 
 bool MPR121_t::isInited(){
-	return (error & (1<<NOT_INITED_BIT)) == 0;
+	return (error & (1<<INITED_BIT)) != 0;
 }
 
 void MPR121_t::updateTouchData(){
