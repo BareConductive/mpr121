@@ -60,4 +60,8 @@ install:
     - pip install -U platformio
 
 script:
-    - platformio ci --lib="." --src="examples/SimpleTouch" --board=esp01
+    - platformio ci --lib="." "examples/SimpleTouch" --board=esp01
+    - platformio ci --lib="." "examples/GPIOinverter" --board=esp01
+    - platformio ci --lib="." "examples/LEDfade" --board=esp01
+    - platformio ci --lib="." "examples/DataStream" --board=esp01
+
