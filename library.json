@@ -1,0 +1,12 @@
+{
+        "name": "MPR121",
+        "version": "1.0.0",
+        "keywords": "MPR121, Touch, I2C",
+        "description": "Library for the MPR121 touch controller",
+        "repository": {
+                "type": "git",
+                "url": "https://github.com/BareConductive/mpr121"
+        },
+        "frameworks": "arduino",
+        "platforms": "espressif8266"
+}

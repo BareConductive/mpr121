@@ -50,7 +50,6 @@ extern "C" {
 #define OUT_OF_RANGE_BIT 4
 
 MPR121_t::MPR121_t(){
-	Wire.begin();	
 	address = 0x5C;    // default address is 0x5C, for use with Bare Touch Board
 	ECR_backup = 0x00;
 	running = false;
