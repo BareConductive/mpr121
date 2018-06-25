@@ -50,7 +50,7 @@ const int releaseThreshold = 20;
 void setup(){  
   Serial.begin(baudRate);
   while(!Serial); // only needed for Arduino Leonardo or Bare Touch Board 
-
+  
   // 0x5C is the MPR121 I2C address on the Bare Touch Board
   if(!MPR121.begin(0x5C)){ 
     Serial.println("error setting up MPR121");  
@@ -92,10 +92,7 @@ void loop(){
 void readRawInputs(){
     int i;
     
-    if(MPR121.touchStatusChanged()) MPR121.updateTouchData();
-    MPR121.updateBaselineData();
-    MPR121.updateFilteredData();
-    
+    MPR121.updateAll();
     
     Serial.print("TOUCH: ");
     for(i=0; i<13; i++){          // 13 touch values
@@ -106,14 +103,14 @@ void readRawInputs(){
     
     Serial.print("TTHS: ");
     for(i=0; i<13; i++){          // 13 touch thresholds
-      Serial.print(touchThreshold, DEC); 
+      Serial.print(MPR121.getTouchThreshold(i), DEC); 
       if(i<12) Serial.print(" ");
     }   
     Serial.println();
     
     Serial.print("RTHS: ");
     for(i=0; i<13; i++){          // 13 release thresholds
-      Serial.print(releaseThreshold, DEC); 
+      Serial.print(MPR121.getReleaseThreshold(i), DEC); 
       if(i<12) Serial.print(" ");
     }   
     Serial.println();

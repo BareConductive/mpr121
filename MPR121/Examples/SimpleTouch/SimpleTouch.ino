@@ -44,8 +44,6 @@ void setup()
   Serial.begin(9600);
   while(!Serial);  // only needed if you want serial feedback with the
   		   // Arduino Leonardo or Bare Touch Board
-
-  Wire.begin();
   
   // 0x5C is the MPR121 I2C address on the Bare Touch Board
   if(!MPR121.begin(0x5C)){ 

@@ -48,7 +48,6 @@ Typical use example:
 #include <MPR121.h>
 
 void setup(){
-	Wire.begin();
 	MPR121.begin(MPR121addr);
 }
 

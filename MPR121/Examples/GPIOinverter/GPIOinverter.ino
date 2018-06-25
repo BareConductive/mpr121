@@ -46,8 +46,6 @@ void setup(){
   Serial.begin(9600);
   //while(!Serial);  // only needed if you want serial feedback with the
   		     // Arduino Leonardo or Bare Touch Board
-
-  Wire.begin();
   
   // 0x5C is the MPR121 I2C address on the Bare Touch Board
   if(!MPR121.begin(0x5C)){ 
@@ -86,21 +84,21 @@ void setup(){
   // i.e. if 1 pin is required, this is ALWAYS E11, if 2 pins, E11 and E10
   // and so on up to 8 pins (E11..E4). 
   
-  // See p16 of http://www.freescale.com/files/sensors/doc/data_sheet/MPR121.pdf
+  // See p.20 of http://www.nxp.com/docs/en/data-sheet/MPR121.pdf
   // for more details.
   
   MPR121.setNumDigPins(2);
   
   // Note that each electrode has 7 possible pin modes (6 GPIO and 1 touch)
-  // these are INPUT, INPUT_PU (input with internal pullup), INPUT_PD (input
-  // with internal pulldown), OUTPUT, OUTPUT_HS (open collector output, high-
-  // side), OUTPUT_LS (open collector output, low side).
+  // these are INPUT, INPUT_PULLUP (input with internal pullup), INPUT_PULLDOWN 
+  // (input with internal pulldown), OUTPUT, OUTPUT_HIGHSIDE (open collector 
+  // output, high-side), OUTPUT_LOWSIDE (open collector output, low side).
   
-  // See p3 of http://cache.freescale.com/files/sensors/doc/app_note/AN3894.pdf 
+  // See p.3 of http://cache.freescale.com/files/sensors/doc/app_note/AN3894.pdf 
   // for more details
   
   MPR121.pinMode(11, OUTPUT);
-  MPR121.pinMode(10, INPUT_PU);
+  MPR121.pinMode(10, INPUT_PULLUP);
 }
 
 void loop(){                                                                           
