@@ -3,17 +3,16 @@
  Bare Conductive MPR121 library
  ------------------------------
 
- DataStream.ino - prints capacitive sense data from MPR121 to serial port
+ MPR121_Datastream.h - MPR121_Datastream class header file
 
  Based on code by Jim Lindblom and plenty of inspiration from the Freescale
  Semiconductor datasheets and application notes.
 
- Bare Conductive code written by Stefan Dzisiewski-Smith, Peter Krige
- and Szymon Kaliski.
+ Bare Conductive code written by Szymon Kaliski.
 
  This work is licensed under a MIT license https://opensource.org/licenses/MIT
 
- Copyright (c) 2016, Bare Conductive
+ Copyright (c) 2019, Bare Conductive
 
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -35,55 +34,33 @@
 
 *******************************************************************************/
 
-// serial rate
-#define BAUD_RATE 57600
+#ifndef MPR121_DATASTREAM_H
+#define MPR121_DATASTREAM_H
 
-#include <MPR121.h>
-#include <MPR121_Datastream.h>
-#include <Wire.h>
+#include <Arduino.h>
+#include "MPR121.h"
 
-void setup(){
-  Serial.begin(BAUD_RATE);
-  while (!Serial); // only needed for Arduino Leonardo or Bare Touch Board
+class MPR121_Datastream_type {
+public:
+  MPR121_Datastream_type(){};
+  ~MPR121_Datastream_type(){};
 
-  // 0x5C is the MPR121 I2C address on the Bare Touch Board
-  if (!MPR121.begin(0x5C)) {
-    Serial.println("error setting up MPR121");
-    switch(MPR121.getError()){
-      case NO_ERROR:
-        Serial.println("no error");
-        break;
-      case ADDRESS_UNKNOWN:
-        Serial.println("incorrect address");
-        break;
-      case READBACK_FAIL:
-        Serial.println("readback failure");
-        break;
-      case OVERCURRENT_FLAG:
-        Serial.println("overcurrent on REXT pin");
-        break;
-      case OUT_OF_RANGE:
-        Serial.println("electrode out of range");
-        break;
-      case NOT_INITED:
-        Serial.println("not initialised");
-        break;
-      default:
-        Serial.println("unknown error");
-        break;
-    }
-    while(1);
-  }
+  void begin();
+  void begin(int baudRate);
+  void begin(Stream *stream);
+  void begin(MPR121_type *mpr121);
+  void begin(MPR121_type *mpr121, Stream *stream);
+  void begin(MPR121_type *mpr121, int baudRate);
 
-  // this restores thresholds saved in EEPROM
-  MPR121.restoreSavedThresholds();
+  void processSerial();
+  void print();
+  void update();
 
-  // start datastream object using provided Serial reference
-  MPR121_Datastream.begin(&Serial);
-}
+private:
+  MPR121_type *mpr121; // mpr121 instance
+  Stream *stream; // hardware or software serial port
+};
 
-void loop(){
-  MPR121.updateAll();
-  MPR121_Datastream.update();
-}
+extern MPR121_Datastream_type MPR121_Datastream;
 
+#endif // MPR121_DATASTREAM_H

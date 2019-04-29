@@ -67,3 +67,7 @@ void loop(){
 * [DataStream](./MPR121/Examples/DataStream/) - serial data stream of capacitance data from MPR121
 * [GPIOinverter](./MPR121/Examples/GPIOinverter/) - MPR121 GPIO inverter - reads one pin and outputs the inverse on another
 * [LEDfade](./MPR121/Examples/LEDfade/) - simple MPR121 LED fader
+
+## Note
+
+The new `clearSavedThresholds()`, `restoreSavedThresholds()` and `saveTouchThreshold()` methods for the MPR121 object use EEPROM to save and restore thresholds automatically when setting them with the updated Grapher Processing sketch. However, if you're using a SAMD21 or SAMD51 board (like the Arduino Zero or Adafruit Metro M4), these MCUs don't have onboard EEPROM. As a result, although your code will compile and run normally in every other way, these functions will not work. Also, the new Datastream object's `reset()` method will do nothing due to the different way that watchdog timers are handled on AVR boards vs. other boards.
