@@ -44,7 +44,7 @@ extern "C" {
 #include "MPR121.h"
 #include <Arduino.h>
 
-#ifndef ARDUINO_ARCH_SAMD
+#ifdef ARDUINO_ARCH_AVR
   #include <EEPROM.h>
 #endif
 
@@ -188,7 +188,7 @@ bool MPR121_type::begin(uint8_t address, uint8_t touchThreshold, uint8_t release
 }
 
 void MPR121_type::clearSavedThresholds() {
-  #ifndef ARDUINO_ARCH_SAMD
+  #ifdef ARDUINO_ARCH_AVR
     uint8_t maxElectrodes = 12;
     int len = E2END;
 
@@ -200,7 +200,7 @@ void MPR121_type::clearSavedThresholds() {
 }
 
 void MPR121_type::restoreSavedThresholds() {
-  #ifndef ARDUINO_ARCH_SAMD
+  #ifdef ARDUINO_ARCH_AVR
     uint8_t maxElectrodes = 12;
     int len = E2END;
 
@@ -492,7 +492,7 @@ void MPR121_type::setTouchThreshold(uint8_t val){
 }
 
 void MPR121_type::saveTouchThreshold(uint8_t electrode, uint8_t val){
-  #ifndef ARDUINO_ARCH_SAMD
+  #ifdef ARDUINO_ARCH_AVR
     if(electrode>12 || !isInited()) return; // avoid out of bounds behaviour
 
     setTouchThreshold(electrode, val);
@@ -534,7 +534,7 @@ void MPR121_type::setReleaseThreshold(uint8_t electrode, uint8_t val){
 }
 
 void MPR121_type::saveReleaseThreshold(uint8_t electrode, uint8_t val){
-  #ifndef ARDUINO_ARCH_SAMD
+  #ifdef ARDUINO_ARCH_AVR
     if(electrode>12 || !isInited()) return; // avoid out of bounds behaviour
 
     setReleaseThreshold(electrode, val);

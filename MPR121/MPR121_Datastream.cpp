@@ -48,10 +48,11 @@ void reset() {
   #ifdef ARDUINO_ARCH_AVR
     wdt_disable();
     wdt_enable(WDTO_15MS);
-  #endif
 
   while (true) {
   }
+
+  #endif
 }
 
 char *splitString(char *data, char *separator, int index) {
