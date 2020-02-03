@@ -25,7 +25,6 @@ Library includes support for:
 
 Still to be implemented:
 
-* full support for autocalibration / autoconfig
 * callback attachment for interrupt pin
 
 ## Requirements

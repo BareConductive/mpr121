@@ -713,6 +713,34 @@ bool MPR121_type::autoSetElectrodeCDC(){
   return(scratch);
 }
 
+bool MPR121_type::autoSetElectrodes(uint16_t VCC_mV, bool fixedChargeTime){
+  uint8_t USL = (uint8_t)((((uint32_t)VCC_mV - 700)*256)/VCC_mV);
+  uint8_t T_L = (uint8_t)(((uint16_t)USL * 90) / 100);
+  uint8_t LSL = (uint8_t)(((uint16_t)USL * 65) / 100);
+  bool wasRunning = running;
+
+  stop();
+
+  setRegister(MPR121_USL, USL);
+  setRegister(MPR121_TL, T_L);
+  setRegister(MPR121_LSL, LSL);
+
+  // don't enable retry, copy other settings from elsewhere
+  setRegister(MPR121_ACCR0, 1 | ((ECR_backup & 0xC0) >> 4) | (getRegister(MPR121_AFE1) & 0xC0)); 
+  // fixed charge time is useful for designs with higher lead-in resistance - e.g. using Bare Electric Paint
+  setRegister(MPR121_ACCR1, fixedChargeTime ? 1 << 7 : 0); 
+
+  if(wasRunning){
+    run();
+  }
+
+  return(!(getRegister(MPR121_OORS2) & 0xC0));
+}
+
+bool MPR121_type::autoSetElectrodes(bool fixedChargeTime){
+  return(autoSetElectrodes(3300, fixedChargeTime));
+}
+
 void MPR121_type::setNumDigPins(uint8_t numPins){
   if(!isInited()) return;
   bool wasRunning = running;

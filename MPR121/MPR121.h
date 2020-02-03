@@ -380,6 +380,12 @@ class MPR121_type
     void setGlobalCDC(uint8_t CDC);
     void setElectrodeCDC(uint8_t electrode, uint8_t CDC);
 
+    // runs hardware routine for automatic electrode calibration for all electrodes
+    // this is implemented in the MPR121 hardware itself
+    // fixedChargeTime flag keeps CDT constant (useful for carbon-based inks with high lead-in resistance)
+    bool autoSetElectrodes(uint16_t VCC_mV, bool fixedChargeTime = true);
+    bool autoSetElectrodes(bool fixedChargeTime = true);
+
     // software routine to keep CDT constant and adjust CDC to fit
     bool autoSetElectrodeCDC(uint8_t electrode, uint16_t VCC_mV);
     bool autoSetElectrodeCDC(uint8_t electrode);

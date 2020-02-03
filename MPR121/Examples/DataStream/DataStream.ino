@@ -8,8 +8,8 @@
  Based on code by Jim Lindblom and plenty of inspiration from the Freescale
  Semiconductor datasheets and application notes.
 
- Bare Conductive code written by Stefan Dzisiewski-Smith, Peter Krige
- and Szymon Kaliski.
+ Bare Conductive code written by Stefan Dzisiewski-Smith, Peter Krige, Pascal
+ Loose and Szymon Kaliski.
 
  This work is licensed under a MIT license https://opensource.org/licenses/MIT
 
@@ -35,21 +35,32 @@
 
 *******************************************************************************/
 
-// serial rate
-#define BAUD_RATE 57600
-
+// touch includes
 #include <MPR121.h>
 #include <MPR121_Datastream.h>
 #include <Wire.h>
 
-void setup(){
-  Serial.begin(BAUD_RATE);
-  while (!Serial); // only needed for Arduino Leonardo or Bare Touch Board
+// touch constants
+const uint32_t BAUD_RATE = 115200;
+const uint8_t MPR121_ADDR = 0x5C;
+const uint8_t MPR121_INT = 4;
 
-  // 0x5C is the MPR121 I2C address on the Bare Touch Board
-  if (!MPR121.begin(0x5C)) {
+// serial monitor behaviour constants
+const bool WAIT_FOR_SERIAL = false;
+
+// MPR121 datastream behaviour constants
+const bool MPR121_SAVED_THRESHOLDS = true;
+
+void setup() {
+  Serial.begin(BAUD_RATE);
+
+  if (WAIT_FOR_SERIAL) {
+    while (!Serial);
+  }
+
+  if (!MPR121.begin(MPR121_ADDR)) {
     Serial.println("error setting up MPR121");
-    switch(MPR121.getError()){
+    switch (MPR121.getError()) {
       case NO_ERROR:
         Serial.println("no error");
         break;
@@ -72,18 +83,22 @@ void setup(){
         Serial.println("unknown error");
         break;
     }
-    while(1);
+    while (1);
   }
 
-  // this restores thresholds saved in EEPROM
-  MPR121.restoreSavedThresholds();
+  MPR121.setInterruptPin(MPR121_INT);
 
-  // start datastream object using provided Serial reference
-  MPR121_Datastream.begin(&Serial);
+  if (MPR121_SAVED_THRESHOLDS) {
+    MPR121.restoreSavedThresholds();
+  } else {
+    MPR121.setTouchThreshold(40);
+    MPR121.setReleaseThreshold(20);
+  }
+
+  MPR121_Datastream.begin(&Serial);  // start datastream object using provided Serial reference
 }
 
-void loop(){
+void loop() {
   MPR121.updateAll();
   MPR121_Datastream.update();
 }
-

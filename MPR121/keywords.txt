@@ -95,6 +95,7 @@ setElectrodeCDC	KEYWORD2
 setGlobalCDT	KEYWORD2
 setElectrodeCDT	KEYWORD2
 autoSetElectrodeCDC	KEYWORD2
+autoSetElectrodes	KEYWORD2
 setFFI	KEYWORD2
 setSFI	KEYWORD2
 
