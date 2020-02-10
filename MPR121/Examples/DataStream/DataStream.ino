@@ -45,18 +45,12 @@ const uint32_t BAUD_RATE = 115200;
 const uint8_t MPR121_ADDR = 0x5C;
 const uint8_t MPR121_INT = 4;
 
-// serial monitor behaviour constants
-const bool WAIT_FOR_SERIAL = false;
-
 // MPR121 datastream behaviour constants
 const bool MPR121_SAVED_THRESHOLDS = true;
 
 void setup() {
   Serial.begin(BAUD_RATE);
-
-  if (WAIT_FOR_SERIAL) {
-    while (!Serial);
-  }
+  pinMode(LED_BUILTIN, OUTPUT);
 
   if (!MPR121.begin(MPR121_ADDR)) {
     Serial.println("error setting up MPR121");
@@ -94,6 +88,15 @@ void setup() {
     MPR121.setTouchThreshold(40);
     MPR121.setReleaseThreshold(20);
   }
+
+  MPR121.setFFI(FFI_10);
+  MPR121.setSFI(SFI_10);
+  MPR121.setGlobalCDT(CDT_4US);  // reasonable for larger capacitances
+
+  digitalWrite(LED_BUILTIN, HIGH);  // switch on user LED while auto calibrating electrodes
+  delay(1000);
+  MPR121.autoSetElectrodes();  // autoset all electrode settings
+  digitalWrite(LED_BUILTIN, LOW);
 
   MPR121_Datastream.begin(&Serial);  // start datastream object using provided Serial reference
 }
