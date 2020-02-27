@@ -285,3 +285,4 @@ MPR121_PWM3	LITERAL1
 # Instances (KEYWORD3)
 #######################################
 MPR121	KEYWORD3
+MPR121_Datastream	KEYWORD3
