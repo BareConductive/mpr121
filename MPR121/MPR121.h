@@ -146,7 +146,7 @@ struct MPR121_settings_type
 };
 
 // GPIO pin function constants
-enum mpr121_pinf_type
+enum class mpr121_pinf_type
 {
   // INPUT and OUTPUT (and others) are already defined by Arduino, use its definitions if they exist
 #ifndef INPUT
