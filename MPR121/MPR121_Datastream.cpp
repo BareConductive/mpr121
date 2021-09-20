@@ -55,12 +55,13 @@ void reset() {
   #endif
 }
 
-char *splitString(char *data, char *separator, int index) {
+char *splitString(char *data, const char *separator, int index) {
   char *act, *sub, *ptr;
   static char copy[255];
   int i;
 
   strcpy(copy, data);
+  sub = copy; // to supress the warning 
 
   for (i = 0, act = copy; i <= index; i++, act = NULL) {
     sub = strtok_r(act, separator, &ptr);

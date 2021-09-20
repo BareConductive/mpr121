@@ -93,7 +93,7 @@ void MPR121_type::setRegister(uint8_t reg, uint8_t value){
 }
 
 uint8_t MPR121_type::getRegister(uint8_t reg){
-  uint8_t scratch;
+    uint8_t scratch = 0;
 
     Wire.beginTransmission(address);
     Wire.write(reg); // set address to read from our requested register
@@ -786,7 +786,7 @@ void MPR121_type::pinMode(uint8_t electrode, mpr121_pinf_type mode){
   uint8_t bitmask = 1<<(electrode-4);
 
   switch(mode){
-    case INPUT_PULLDOWN:
+    case mpr121_pinf_type::INPUT_PULLDOWN:
       // MPR121_EN = 1
       // MPR121_DIR = 0
       // MPR121_CTL0 = 1
@@ -797,7 +797,7 @@ void MPR121_type::pinMode(uint8_t electrode, mpr121_pinf_type mode){
       setRegister(MPR121_CTL1, getRegister(MPR121_CTL1) & ~bitmask);
       break;
 
-    case OUTPUT_HIGHSIDE:
+    case mpr121_pinf_type::OUTPUT_HIGHSIDE:
       // MPR121_EN = 1
       // MPR121_DIR = 1
       // MPR121_CTL0 = 1
@@ -808,7 +808,7 @@ void MPR121_type::pinMode(uint8_t electrode, mpr121_pinf_type mode){
       setRegister(MPR121_CTL1, getRegister(MPR121_CTL1) | bitmask);
       break;
 
-    case OUTPUT_LOWSIDE:
+    case mpr121_pinf_type::OUTPUT_LOWSIDE:
       // MPR121_EN = 1
       // MPR121_DIR = 1
       // MPR121_CTL0 = 1
